@@ -1,26 +1,25 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { MainComponent } from './main/main.component';
-import { LoginComponent } from './main/components/login/login.component';
-import { DrawComponent } from './main/components/draw/draw.component';
-import { GalleryComponent } from './main/components/gallery/gallery.component';
+import { CommonModule } from "@angular/common";
+import { RouterModule } from "@angular/router";
+import { provideFirebaseApp } from "@angular/fire/app";
+import { getFirestore, provideFirestore } from "@angular/fire/firestore";
+import { initializeApp } from "firebase/app";
+import { environment } from "../environment/environment";
+import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MainComponent,
-    LoginComponent,
-    DrawComponent,
-    GalleryComponent
-  ],
   imports: [
-    BrowserModule,
-    AppRoutingModule
+    RouterModule,
+    CommonModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore())
   ],
+  declarations: [],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: []
 })
 export class AppModule { }
+

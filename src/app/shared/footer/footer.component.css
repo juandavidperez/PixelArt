@@ -1,0 +1,12 @@
+div{
+  background-color: #7200b5;
+  color: #dadada;
+}
+
+ul{
+  display: grid;
+  list-style: none;
+  align-content: space-between;
+  justify-items: center;
+  padding: 20px;
+}

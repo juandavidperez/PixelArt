@@ -1,0 +1,155 @@
+.home{
+  padding: 20px;
+  background-image: url("src/app/shared/img/wallpaper.jpg");
+}
+
+h2{
+  font-size: 50px;
+  color: white;
+  text-align: center;
+}
+
+h4{
+  font-size: 30px;
+  text-align: center;
+  color: #a7d1e3;
+}
+
+li{
+  margin-right: 10px;
+}
+
+a{
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+
+button{
+  font-size: 20px;
+  cursor: pointer;
+  max-width: 300px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: #ffffff;
+  padding: 15px ;
+  border-radius: 30px ;
+  border: 0px solid;
+  margin-right: 5px;
+}
+
+.button-login{
+  background: linear-gradient( 90deg , #176fed, #04dc8e);
+}
+
+.button-login:hover{
+  background: linear-gradient( 90deg , #3080f1, #2defa9);
+}
+
+.button-draw{
+  background: linear-gradient( 90deg , #FF5733, #e87676);
+}
+
+.button-draw:hover{
+  background: linear-gradient( 90deg , #f86444, #e88f8f);
+}
+
+
+.display-a{
+  display: flex;
+  align-items: center;
+}
+
+.display-a svg{
+  padding-right: 5px;
+}
+
+ul{
+  margin-right: 10px;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+li{
+  margin-right: 10px;
+}
+
+.container-categories {
+  background-color: #c1bbbb !important;
+  margin-bottom: 20px;
+}
+
+.categories-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.category-item {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.main-content {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+.featured-article {
+  position: relative;
+}
+
+.featured-image {
+  width: 100%;
+  height: auto;
+}
+
+.featured-text {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  font-size: 1.2rem;
+}
+
+.card-container {
+  padding: 10px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  background-color: #7716fd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 2px 4px 8px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-article {
+  padding: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .card-container {
+    flex-direction: row;
+  }
+}
+
