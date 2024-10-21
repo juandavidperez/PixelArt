@@ -1,3 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <title>PixelArt - Login</title>
+</head>
+<body>
 
-<div><h2> ESTAMOS TRABAJANDO PARA QUE MUY PRONTO PUEDAS NAVEGAR CORRECTAMENTE EN NUESTRA PAGINA</h2></div>
+<div class="container-form login hide">
+  <div class="information">
+    <div class="info-childs">
+      <h2>Bienvenido</h2>
+      <p>Registrate si aún no tienes una cuenta</p>
+      <input type="button" value="Registrarse" id="sign-up" (click)="directLRegister()">
+    </div>
+  </div>
+  <div class="form-information">
+    <div class="form-information-childs">
+      <h2>Iniciar Sesión</h2>
+      <div class="icons">
+        <i class='bx bxl-google'></i>
+        <i class='bx bxl-github'></i>
+        <i class='bx bxl-linkedin'></i>
+      </div>
+      <p>Inicia Sesión con una cuenta</p>
+      <form class="form form-login" novalidate>
+        <div>
+          <label>
+            <i class='bx bx-envelope'></i>
+            <input type="email" placeholder="Correo Electronico" name="userPassword">
+          </label>
+        </div>
+        <div>
+          <label>
+            <i class='bx bx-lock-alt'></i>
+            <input type="password" placeholder="Contraseña" name="userPassword">
+          </label>
+        </div>
+        <input type="submit" value="Iniciar Sesión">
+        <div class="alerta-error">Todos los campos son obligatorios</div>
+        <div class="alerta-exito">Te registraste correctamente</div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+
+
 
