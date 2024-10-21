@@ -1,3 +1,0 @@
-# PixelArt
-
-Proyecto de Aula
