@@ -50,4 +50,8 @@ public class UserService {
 		}
 	}
 	
+	public Optional<UserModel> getUserByEmailAndPassword(UserModel user) {
+		return userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());
+	}
+	
 }
