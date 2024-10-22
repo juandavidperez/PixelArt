@@ -41,6 +41,11 @@ public class UserController {
 		return userService.getUserById(id);
 	}
 	
+	@PostMapping(path = "/getUser")
+	public Optional<UserModel> getUserByEmailAndPassword(@RequestBody UserModel user) {
+		return userService.getUserByEmailAndPassword(user);
+	}
+	
 	@PutMapping(path = "/update/{id}")
 	public UserModel updateUserById(@RequestBody UserModel user, Long id) {
 		return userService.updateById(user, id);
