@@ -29,30 +29,32 @@
         <i class='bx bxl-linkedin'></i>
       </div>
       <p>Por favor ingresa los siguientes datos</p>
-      <form class="form form-register" novalidate>
+      <form [formGroup]="registerForm" class="form form-register" (ngSubmit)="onSubmit()" novalidate>
         <div>
           <label>
             <i class='bx bx-user'></i>
-            <input type="text" placeholder="Nombre Usuario" name="userName">
+            <input type="text" placeholder="Nombre Usuario" formControlName="username">
           </label>
         </div>
         <div>
           <label>
             <i class='bx bx-envelope'></i>
-            <input type="email" placeholder="Correo Electronico" name="userEmail">
+            <input type="email" placeholder="Correo Electronico" formControlName="email">
           </label>
         </div>
         <div>
           <label>
             <i class='bx bx-lock-alt'></i>
-            <input type="password" placeholder="Contraseña" name="userPassword">
+            <input type="password" placeholder="Contraseña" formControlName="password">
           </label>
         </div>
 
-        <input type="submit" value="Registrarse">
-        <div class="alerta-error">Todos los campos son obligatorios</div>
-        <div class="alerta-exito">Te registraste correctamente</div>
+        <input type="submit" value="Registrarse" [disabled]="registerForm.invalid">
+
+        <div *ngIf="registerForm.invalid && registerForm.touched" class="alerta-error">Todos los campos son obligatorios</div>
+        <div *ngIf="registrationSuccess" class="alerta-exito">Te registraste correctamente</div>
       </form>
+
     </div>
   </div>
 </div>

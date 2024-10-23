@@ -30,22 +30,22 @@
         <i class='bx bxl-linkedin'></i>
       </div>
       <p>Inicia Sesión con una cuenta</p>
-      <form class="form form-login" novalidate>
+      <form class="form form-login" novalidate [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div>
           <label>
             <i class='bx bx-envelope'></i>
-            <input type="email" placeholder="Correo Electronico" name="userPassword">
+            <input type="email" placeholder="Correo Electronico" formControlName="email">
           </label>
         </div>
         <div>
           <label>
             <i class='bx bx-lock-alt'></i>
-            <input type="password" placeholder="Contraseña" name="userPassword">
+            <input type="password" placeholder="Contraseña" formControlName="password">
           </label>
         </div>
-        <input type="submit" value="Iniciar Sesión">
-        <div class="alerta-error">Todos los campos son obligatorios</div>
-        <div class="alerta-exito">Te registraste correctamente</div>
+        <input type="submit" value="Iniciar Sesión" [disabled]="loginForm.invalid">
+        <div *ngIf="loginForm.invalid && loginForm.touched" class="alerta-error">Todos los campos son obligatorios</div>
+        <div *ngIf="loginSuccess" class="alerta-exito">Haz inicio sesión correctamente</div>
       </form>
     </div>
   </div>
