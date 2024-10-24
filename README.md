@@ -1,6 +1,6 @@
 # PixelArt
 
-Proyecto de Aula que implementa una aplicación de pixel art. Este proyecto cuenta con un **frontend** desarrollado en **Angular** y un **backend** implementado en **Java** con Spring Boot.
+Proyecto de Aula que implementa una aplicación de Pixel Art. Este proyecto cuenta con un **frontend** desarrollado en **Angular** y un **backend** implementado en **Java** con Spring Boot.
 
 ## Tabla de Contenidos
 
