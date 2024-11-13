@@ -1,4 +1,55 @@
 
 
-<div><h2> ESTAMOS TRABAJANDO PARA QUE MUY PRONTO PUEDAS NAVEGAR CORRECTAMENTE EN NUESTRA PAGINA</h2></div>
+<nav>
+
+  <label for="brushSize">Tamaño del pincel: </label>
+  <input type="range" id="brushSize" min="10" max="50" step="10" [(ngModel)]="brushSize" (input)="changeBrushSize(brushSize)">
+  <span>{{brushSize}} px</span> 
+
+  <button class="savePng-button" (click)="saveCanvasAsPNG()">Guardar como PNG</button>
+
+</nav>
+
+<main>
+
+  <aside>
+
+    <h2>Herramientas</h2>
+    <button (click)="clearCanvas()" title="Limpiar lienzo"><img src="../../../../assets/img/istockphoto-1268272218-612x612-removebg-preview.png"></button> <br>
+    <button (click)="activateEraser()"  title="Borrador"><img src="../../../../assets/img/pixel-art-eraser-school-supplies-260nw-1592272519-removebg-preview.png" alt=""></button>  <br> 
+    <button (click)="deactivateEraser('#000000')"  title="Lapiz"><img src="../../../../assets/img/pencil-pixel-art-icon-isolated-260nw-2097008554-removebg-preview.png" alt=""></button> <br>
+      <button (click)="activateBucket()"  title="Cubeta (beta)"><img src="../../../../assets/img/pixel-art-water-bucket-editable-260nw-1901045389-removebg-preview.png" alt=""></button> 
+  </aside>
+
+  <article>
+    <div class="draw-square">
+      <canvas #canvas [attr.width]="canvasWidth" [attr.height]="canvasHeight " style="border: 1px solid black;"></canvas>
+    </div>
+  </article>
+
+  <aside class="right">
+    <label for="colorPicker">Elige un color:</label> <br>
+    <input type="color" id="colorPicker" [(ngModel)]="selectedColor" /> <br>
+
+    <form [formGroup]="pixelSize">
+    
+      <label for="">Ancho</label> <br>
+      <input type="number" formControlName="width" step="10">
+      <br>
+      <label for="">Altura</label> <br>
+      <input type="number" formControlName="height" step="10">
+  
+    </form>
+    <button class="form-button" (click)="applyCanvasSize()">Aplicar tamaño</button>
+  
+  </aside>
+
+
+</main>
+
+
+
+
+
+
 

@@ -1,4 +1,116 @@
+*{
+  overflow-y: hidden !important;
+}
+
 div{
   text-align: center;
   margin: 0 auto;
 }
+
+.draw-square{
+  width: 100%
+}
+
+canvas {
+  background-image: url("../../../../assets/img/fondoEjemplo.jpg");
+  background-repeat: repeat;
+  background-size: 420px;
+  cursor: crosshair;   
+
+}
+
+
+nav{
+  text-align: center;
+  padding: 20px;
+  color: #FFFFFF;
+  background-color: #555555;
+}
+
+main{
+  display: flex;
+  justify-content: center;
+  background-color: #111111;
+}
+
+main aside{
+  overflow: hidden ;
+  text-align: center;
+  height: 1360px;
+  color: #FFFFFF;
+  padding: 10px;
+  background-color: #1e1e1e;
+}
+
+#colorPicker{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 80px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+}
+
+aside button{
+  background-color: transparent;
+  border: none;
+}
+
+aside button:hover{
+  background-color:rgb(37, 37, 37);
+  border: none;
+}
+
+button img{
+
+  width: 80px;
+  height: 80px;
+}
+
+#colorPicker::-webkit-color-swatch {
+  border-radius: 5px;
+  border: 1px solid white;
+}
+
+#colorPicker::-moz-color-swatch {
+  border-radius: 5px;
+  border: none;
+}
+
+form input[type="number"]{
+  width: 40%;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+}
+
+.form-button{
+  background-color: antiquewhite !important;
+  width: 70%;
+  margin: 5px;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.savePng-button{
+  color: white;   
+  margin: 5px 30px;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #00bf00, #58ef58);
+}
+
+main article{
+  display: block;
+  margin: auto;
+}
+
+aside button {
+  margin: 5px;
+}
+
