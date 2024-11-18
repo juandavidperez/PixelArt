@@ -48,9 +48,8 @@ Proyecto de Aula que implementa una aplicación de Pixel Art. Este proyecto cuen
 Asegúrate de tener instalados los siguientes programas en tu máquina:
 
 - [Node.js](https://nodejs.org/) (incluye npm)
-- [Java JDK](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+- [Java JDK](https://www.oracle.com/co/java/technologies/downloads/#java21)
 - [Maven](https://maven.apache.org/)
-- [MySQL](https://www.mysql.com/)
 
 ### Clonar el Repositorio
 
