@@ -85,7 +85,7 @@ li{
 
 .categories-list {
   list-style-type: none;
-  padding: 0;
+  padding: 5px;
   display: flex;
   gap: 20px;
 }
