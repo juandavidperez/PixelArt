@@ -18,8 +18,7 @@ export class UsersService {
   }
 
   loginUser(user: LoginUsers): Observable<registerUsers> {
-    return this.http.post<registerUsers>(`${this.apiUrl}/getUser`, user);
+    return this.http.post<registerUsers>(`${this.apiUrl}/login`, user);
   }
-
 
 }
