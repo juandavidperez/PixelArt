@@ -7,6 +7,7 @@ import { initializeApp } from "firebase/app";
 import { environment } from "../environment/environment";
 import {AngularFireModule} from "@angular/fire/compat";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import { HolaComponent } from './hola/hola.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,9 @@ import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore())
   ],
-  declarations: [],
+  declarations: [
+    HolaComponent
+  ],
   providers: [],
   bootstrap: []
 })

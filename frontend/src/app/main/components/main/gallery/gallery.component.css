@@ -1,0 +1,74 @@
+@charset "utf-8";
+a.btn{
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: "Segoe UI",Arial,sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+h2 {
+  margin-top: 0;
+  margin-bottom: .5rem;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.tarjeta {
+  max-width: 65vw;
+  margin: 48px auto;
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.contenido {
+  display: flex;
+}
+@media (max-width: 728px){
+  .contenido{
+    flex-direction: column;
+  }
+  .tarjeta {
+    max-width: 95vw;
+  }
+}
+.ladoIzq, .ladoDer {
+  width: 100%;
+}
+.ladoDer img {
+  width: 100%;
+  height: 100%;
+  border-style: none;
+}
+.ladoIzq {
+  background: #fd9c87;
+  color: white;
+  padding: 48px;
+
+}
+.btn {
+  display: inline-block;
+  background: white;
+  margin-right: 4px;
+  padding: 14px;
+  border-radius: 5px;
+  margin-top: 18px;
+}
+a.btn{
+  text-decoration: none;
+}
+a.btn:first-of-type {
+  background: #d02626;
+  color: white;
+  border: 1px solid #fff;
+}
+a.btn:hover{
+  opacity: 0.8;
+}
+
