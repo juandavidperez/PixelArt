@@ -47,6 +47,11 @@ export class DrawComponent implements OnInit{
 
     this.initializePixelData(this.canvasWidth, this.canvasHeight);
 
+    this.pixelSize = this.fb.group({
+      width: [this.canvasWidth, Validators.required],
+      height: [this.canvasHeight, Validators.required]
+    });
+
     this.formPostArt = this.fb.group({
       image: [null, Validators.required],
       title: ['', Validators.required],
@@ -56,7 +61,6 @@ export class DrawComponent implements OnInit{
   }
 
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('modalFooter', { static: false }) modalFooter!: TemplateRef<any>;
   private ctx!: CanvasRenderingContext2D;
   isVisibleView = false;
   selectedColor: string = '#000000';
@@ -67,8 +71,9 @@ export class DrawComponent implements OnInit{
   brushSize: number = 10;
   isBucketActive: boolean = false;
   isAuthenticated: boolean = false;
-  formPostArt: FormGroup;
   previewImageUrl: string | null = null;
+  formPostArt: FormGroup;
+  pixelSize: FormGroup;
   user: any = [];
 
 
@@ -97,7 +102,6 @@ export class DrawComponent implements OnInit{
 
     downloadLink.click();
   }
-
 
   setupCanvas() {
     this.ctx = this.canvas.nativeElement.getContext('2d')!;
@@ -269,19 +273,11 @@ export class DrawComponent implements OnInit{
     this.isVisibleView = true;
   }
 
-  handleOk(): void {
-    this.isVisibleView = false;
-    this.postArt()
-  }
-
   handleOkRegister(): void {
     this.router.navigate(['/login']);
     this.isVisibleView = false;
   }
 
-  handleCancel(): void {
-    this.isVisibleView = false;
-  }
 
 }
 
