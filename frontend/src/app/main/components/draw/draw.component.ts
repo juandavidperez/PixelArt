@@ -172,6 +172,11 @@ export class DrawComponent implements OnInit{
     this.isBucketActive = true;
   }
 
+  getPixelColor(x: number, y: number): string {
+    const pixel = this.ctx.getImageData(x, y, 1, 1).data;
+    return `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3] / 255})`;
+  }
+
   fillWithBucket(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
     const x = Math.floor((event.clientX - rect.left) / this.brushSize) * this.brushSize;
@@ -180,33 +185,25 @@ export class DrawComponent implements OnInit{
     const startColor = this.getPixelColor(x, y);
     if (startColor === this.selectedColor) return;
 
-    this.floodFill(x, y, startColor, this.selectedColor);
+    this.recursiveFloodFill(x, y, startColor, this.selectedColor);
     this.isBucketActive = false;
   }
 
-  getPixelColor(x: number, y: number): string {
-    const pixel = this.ctx.getImageData(x, y, 1, 1).data;
-    return `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3] / 255})`;
+  recursiveFloodFill(x: number, y: number, startColor: string, fillColor: string) {
+    if (x < 0 || y < 0 || x >= this.canvasWidth || y >= this.canvasHeight) return;
+
+    const currentColor = this.getPixelColor(x, y);
+
+    if (currentColor !== startColor || currentColor === fillColor) return;
+
+    this.fillPixel(x, y);
+
+    this.recursiveFloodFill(x + this.brushSize, y, startColor, fillColor); // Derecha
+    this.recursiveFloodFill(x - this.brushSize, y, startColor, fillColor); // Izquierda
+    this.recursiveFloodFill(x, y + this.brushSize, startColor, fillColor); // Abajo
+    this.recursiveFloodFill(x, y - this.brushSize, startColor, fillColor); // Arriba
   }
 
-
-  floodFill(x: number, y: number, startColor: string, fillColor: string) {
-    const pixelStack = [[x, y]];
-
-    while (pixelStack.length > 0) {
-      const [px, py] = pixelStack.pop()!;
-
-      const currentColor = this.getPixelColor(px, py);
-      if (currentColor !== startColor) continue;
-
-      this.fillPixel(px, py);
-
-      if (px + this.brushSize < this.canvasWidth) pixelStack.push([px + this.brushSize, py]);
-      if (px - this.brushSize >= 0) pixelStack.push([px - this.brushSize, py]);
-      if (py + this.brushSize < this.canvasHeight) pixelStack.push([px, py + this.brushSize]);
-      if (py - this.brushSize >= 0) pixelStack.push([px, py - this.brushSize]);
-    }
-  }
 
   openPostModal(): void {
     this.triggerChangeDetection();
@@ -214,8 +211,8 @@ export class DrawComponent implements OnInit{
 
     canvasElement.toBlob((blob) => {
       if (blob) {
-        this.formPostArt.patchValue({ image: blob }); // Asignamos el Blob al formulario
-        this.previewImageUrl = URL.createObjectURL(blob); // Generamos URL de previsualización
+        this.formPostArt.patchValue({ image: blob });
+        this.previewImageUrl = URL.createObjectURL(blob);
       } else {
         console.error('No se pudo convertir el canvas a Blob.');
       }
@@ -237,13 +234,12 @@ export class DrawComponent implements OnInit{
         this.user = data;
         console.log(this.user);
 
-        const idData = this.user.id; // Obtener el ID del usuario
+        const idData = this.user.id;
 
         console.log('ID del usuario:', idData);
 
-        // Crear el FormData para enviar al servidor
         const formData = new FormData();
-        formData.append('image', this.formPostArt.value.image); // Aquí enviamos el Blob de la imagen
+        formData.append('image', this.formPostArt.value.image);
         formData.append('title', this.formPostArt.value.title);
         formData.append('description', this.formPostArt.value.description);
         formData.append('userId', idData);
