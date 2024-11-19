@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import {Observable} from "rxjs";
+import {map, Observable} from "rxjs";
 import {registerUsers} from "../../../interfaces/registerUsers";
 import {HttpClient} from "@angular/common/http";
 import {LoginUsers} from "../../../interfaces/loginUsers";
+import {UserInterface} from "../../../interfaces/user.interface";
+import {TokenUserService} from "../tokenUser/token-user.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +12,17 @@ import {LoginUsers} from "../../../interfaces/loginUsers";
 export class UsersService {
 
   private apiUrl = 'http://localhost:4002/users';
+  listOfUsers: UserInterface [] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tokenUserService: TokenUserService) {}
+
+  getUsers(): Observable<UserInterface[]>{
+    return this.http.get<UserInterface[]>(`${this.apiUrl}/get`);
+  }
+
+  getUserByUsername(username: string | null): Observable<UserInterface[]> {
+    return this.http.get<UserInterface[]>(`${this.apiUrl}/getUsername/${username}`)
+  }
 
   addUser(user: registerUsers): Observable<registerUsers> {
     return this.http.post<registerUsers>(`${this.apiUrl}/save`, user);
@@ -20,5 +31,16 @@ export class UsersService {
   loginUser(user: LoginUsers): Observable<registerUsers> {
     return this.http.post<registerUsers>(`${this.apiUrl}/login`, user);
   }
+
+
+  loadUser(): void{
+    this.getUsers().subscribe(
+      (data) => {
+        this.listOfUsers = data;
+      },
+      error => console.log("Error al cargar los datos" + error)
+    )
+  }
+
 
 }

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { SearchService } from "../services/searchService/search.service";
 import { CommonModule } from '@angular/common';
+import {TokenUserService} from "../services/tokenUser/token-user.service";
 
 @Component({
   selector: 'app-header',
@@ -15,31 +16,25 @@ import { CommonModule } from '@angular/common';
   ],
   standalone: true
 })
-export class HeaderComponent {
-
+export class HeaderComponent implements OnInit{
   searchTerm: string = '';
   isToken: boolean = false;
+  userName: string | null = null;
 
-  constructor(private searchService: SearchService, private router: Router) {}
+  constructor(private tokenUserService: TokenUserService, private router: Router) {}
 
   ngOnInit() {
-    const token = localStorage.getItem('authToken'); 
-
-    if (token) {
-      this.isToken = true;
-    } else {
-      this.isToken = false;
-    }
+    this.isToken = this.tokenUserService.isAuthenticated();
+    this.userName = this.tokenUserService.getUserName();
   }
 
   onSearch() {
-    this.searchService.setSearchTerm(this.searchTerm);
     this.router.navigate(['main/search'], { queryParams: { q: this.searchTerm } });
   }
 
-  cerrarSesion(){
-    localStorage.removeItem('authToken');
-    window.location.reload();
+  cerrarSesion() {
+    this.tokenUserService.clearToken();
+    this.router.navigate(['/login']);
   }
 
 }
