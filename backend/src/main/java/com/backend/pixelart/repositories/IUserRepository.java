@@ -9,7 +9,8 @@ import com.backend.pixelart.models.UserModel;
 
 @Repository
 public interface IUserRepository extends JpaRepository<UserModel, Long>{
-
     Optional<UserModel> findByEmailAndPassword(String email, String password);
+
+    Optional<UserModel> findByUsername(String username);
 	
 }

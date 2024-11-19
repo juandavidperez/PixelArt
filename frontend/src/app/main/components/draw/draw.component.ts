@@ -1,45 +1,86 @@
-import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, NgModel, Validators } from '@angular/forms';
+import {NgIf, NgOptimizedImage} from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ChangeDetectorRef } from '@angular/core';
+import {NzButtonModule} from "ng-zorro-antd/button";
+import {TokenUserService} from "../../../shared/services/tokenUser/token-user.service";
+import {Router, RouterLink} from "@angular/router";
+import {PixelArtService} from "../../../shared/services/pixelArt/pixel-art.service";
+import {UserInterface} from "../../../interfaces/user.interface";
+import {UsersService} from "../../../shared/services/users/users.service";
+
+
+
 @Component({
   selector: 'app-draw',
   templateUrl: './draw.component.html',
   styleUrls: ['./draw.component.css'],
   imports: [
-    NgOptimizedImage ,
-    FormsModule, 
-    ReactiveFormsModule
+    NgOptimizedImage,
+    FormsModule,
+    ReactiveFormsModule,
+    NzButtonModule,
+    NgIf,
+    RouterLink
   ],
+  providers: [PixelArtService, UsersService],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class DrawComponent {
+export class DrawComponent implements OnInit{
+
+  constructor(private fb: FormBuilder,
+              protected token: TokenUserService,
+              private router: Router ,
+              private pixelArtService: PixelArtService,
+              protected usersService: UsersService,
+              private cd: ChangeDetectorRef) {
+
+    this.initializePixelData(this.canvasWidth, this.canvasHeight);
+
+    this.formPostArt = this.fb.group({
+      image: [null, Validators.required],
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+    });
+
+  }
+
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('modalFooter', { static: false }) modalFooter!: TemplateRef<any>;
   private ctx!: CanvasRenderingContext2D;
+  isVisibleView = false;
   selectedColor: string = '#000000';
   isDrawing: boolean = false;
   pixelData: string[][] = [];
-  pixelSize: FormGroup;
   canvasWidth: number = 600;
   canvasHeight: number = 600;
-  private imageData!: ImageData;
-  brushSize: number = 10; 
-  isBucketActive: boolean = false; 
+  brushSize: number = 10;
+  isBucketActive: boolean = false;
+  isAuthenticated: boolean = false;
+  formPostArt: FormGroup;
+  previewImageUrl: string | null = null;
+  user: any = [];
 
-  constructor(private fb: FormBuilder, private cd: ChangeDetectorRef) {
-    this.pixelSize = this.fb.group({
-      width: [this.canvasWidth, Validators.required],
-      height: [this.canvasHeight, Validators.required]
-    });
-
-    this.initializePixelData(this.canvasWidth, this.canvasHeight);
-  }
 
   ngOnInit() {
+    this.openPostModal()
     this.setupCanvas();
+    this.isAuthenticated = this.token.isAuthenticated();
+
+  }
+
+  triggerChangeDetection() {
+    this.cd.detectChanges();
   }
 
   saveCanvasAsPNG() {
@@ -50,10 +91,9 @@ export class DrawComponent {
 
     const imageDataUrl = this.canvas.nativeElement.toDataURL("image/png");
 
-    // Crear un enlace de descarga
     const downloadLink = document.createElement("a");
     downloadLink.href = imageDataUrl;
-    downloadLink.download = "pixel_art.png"; 
+    downloadLink.download = "pixel_art.png";
 
     downloadLink.click();
   }
@@ -75,7 +115,7 @@ export class DrawComponent {
 
   startDrawing(event: MouseEvent) {
     if (this.isBucketActive) {
-      this.fillWithBucket(event); // Si la cubeta está activa, la usamos para llenar
+      this.fillWithBucket(event);
     } else {
       this.isDrawing = true;
       this.draw(event);
@@ -128,7 +168,6 @@ export class DrawComponent {
     this.selectedColor = originalColor;
   }
 
-  // Activa la herramienta cubeta
   activateBucket() {
     this.isBucketActive = true;
   }
@@ -139,7 +178,7 @@ export class DrawComponent {
     const y = Math.floor((event.clientY - rect.top) / this.brushSize) * this.brushSize;
 
     const startColor = this.getPixelColor(x, y);
-    if (startColor === this.selectedColor) return; 
+    if (startColor === this.selectedColor) return;
 
     this.floodFill(x, y, startColor, this.selectedColor);
     this.isBucketActive = false;
@@ -169,28 +208,84 @@ export class DrawComponent {
     }
   }
 
+  openPostModal(): void {
+    this.triggerChangeDetection();
+    const canvasElement = this.canvas.nativeElement;
+
+    canvasElement.toBlob((blob) => {
+      if (blob) {
+        this.formPostArt.patchValue({ image: blob }); // Asignamos el Blob al formulario
+        this.previewImageUrl = URL.createObjectURL(blob); // Generamos URL de previsualización
+      } else {
+        console.error('No se pudo convertir el canvas a Blob.');
+      }
+    }, 'image/png');
+  }
+
+
+  postArt(): void {
+    const dataName = localStorage.getItem('userId');
+    console.log('ID del usuario:', dataName);
+
+    if (!dataName) {
+      console.error('ID de usuario no encontrado.');
+      return;
+    }
+
+    this.usersService.getUserByUsername(dataName).subscribe(
+      (data) => {
+        this.user = data;
+        console.log(this.user);
+
+        const idData = this.user.id; // Obtener el ID del usuario
+
+        console.log('ID del usuario:', idData);
+
+        // Crear el FormData para enviar al servidor
+        const formData = new FormData();
+        formData.append('image', this.formPostArt.value.image); // Aquí enviamos el Blob de la imagen
+        formData.append('title', this.formPostArt.value.title);
+        formData.append('description', this.formPostArt.value.description);
+        formData.append('userId', idData);
+
+        console.log('Imagen seleccionada:', this.formPostArt.value.image);
+
+        this.pixelArtService.saveArt(formData).subscribe({
+          next: () => {
+            console.log('Arte publicado con éxito');
+            this.router.navigate(['/main']);
+          },
+          error: (err) => console.error('Error al publicar:', err),
+        });
+      },
+      error => {
+        console.error("Error al cargar datos del usuario:", error);
+      }
+    );
+    window.location.reload();
+  }
+
   changeBrushSize(size: number) {
-    this.brushSize = size; // Actualiza el tamaño del pincel basado en el valor del input range
-  }
-  
-  saveCanvasData() {
-    this.imageData = this.ctx.getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
-  }
-  
-  restoreCanvasData() {
-    this.ctx.putImageData(this.imageData, 0, 0);
+    this.brushSize = size;
   }
 
-  applyCanvasSize() {
-    this.saveCanvasData();
-
-    this.canvasWidth = this.pixelSize.get('width')?.value || 300;
-    this.canvasHeight = this.pixelSize.get('height')?.value || 300;
-    this.canvas.nativeElement.width = this.canvasWidth;
-    this.canvas.nativeElement.height = this.canvasHeight;
-
-    this.restoreCanvasData();
-    this.setupCanvas();
+  viewModal(): void {
+    this.isVisibleView = true;
   }
+
+  handleOk(): void {
+    this.isVisibleView = false;
+    this.postArt()
+  }
+
+  handleOkRegister(): void {
+    this.router.navigate(['/login']);
+    this.isVisibleView = false;
+  }
+
+  handleCancel(): void {
+    this.isVisibleView = false;
+  }
+
 }
 

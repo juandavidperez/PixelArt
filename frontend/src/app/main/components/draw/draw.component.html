@@ -1,55 +1,81 @@
 
 
 <nav>
-
+  <a [routerLink]="['/main']">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(63, 96, 247, 1);transform: ;msFilter:;"><path d="m21.743 12.331-9-10c-.379-.422-1.107-.422-1.486 0l-9 10a.998.998 0 0 0-.17 1.076c.16.361.518.593.913.593h2v7a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-4h4v4a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-7h2a.998.998 0 0 0 .743-1.669z"></path></svg>
+    </a>
   <label for="brushSize">Tamaño del pincel: </label>
   <input type="range" id="brushSize" min="10" max="50" step="10" [(ngModel)]="brushSize" (input)="changeBrushSize(brushSize)">
-  <span>{{brushSize}} px</span> 
+  <span>{{brushSize}} px</span>
 
   <button class="savePng-button" (click)="saveCanvasAsPNG()">Guardar como PNG</button>
-
+  <button class="postPng-button" (click)="viewModal() ; openPostModal()">
+    <label for="btn-modal-1">
+      Publicar el dibujo
+    </label>
+  </button>
 </nav>
 
 <main>
-
   <aside>
-
     <h2>Herramientas</h2>
     <button (click)="clearCanvas()" title="Limpiar lienzo"><img src="../../../../assets/img/istockphoto-1268272218-612x612-removebg-preview.png"></button> <br>
-    <button (click)="activateEraser()"  title="Borrador"><img src="../../../../assets/img/pixel-art-eraser-school-supplies-260nw-1592272519-removebg-preview.png" alt=""></button>  <br> 
-    <button (click)="deactivateEraser('#000000')"  title="Lapiz"><img src="../../../../assets/img/pencil-pixel-art-icon-isolated-260nw-2097008554-removebg-preview.png" alt=""></button> <br>
-      <button (click)="activateBucket()"  title="Cubeta (beta)"><img src="../../../../assets/img/pixel-art-water-bucket-editable-260nw-1901045389-removebg-preview.png" alt=""></button> 
+    <button (click)="activateEraser()" title="Borrador"><img src="../../../../assets/img/pixel-art-eraser-school-supplies-260nw-1592272519-removebg-preview.png" alt=""></button> <br>
+    <button (click)="deactivateEraser('#000000')" title="Lapiz"><img src="../../../../assets/img/pencil-pixel-art-icon-isolated-260nw-2097008554-removebg-preview.png" alt=""></button> <br>
+    <button (click)="activateBucket()" title="Cubeta (beta)"><img src="../../../../assets/img/pixel-art-water-bucket-editable-260nw-1901045389-removebg-preview.png" alt=""></button>
   </aside>
 
   <article>
     <div class="draw-square">
-      <canvas #canvas [attr.width]="canvasWidth" [attr.height]="canvasHeight " style="border: 1px solid black;"></canvas>
+      <canvas #canvas [attr.width]="canvasWidth" [attr.height]="canvasHeight" style="border: 1px solid black;"></canvas>
     </div>
   </article>
 
   <aside class="right">
     <label for="colorPicker">Elige un color:</label> <br>
     <input type="color" id="colorPicker" [(ngModel)]="selectedColor" /> <br>
-
-    <form [formGroup]="pixelSize">
-    
-      <label for="">Ancho</label> <br>
-      <input type="number" formControlName="width" step="10">
-      <br>
-      <label for="">Altura</label> <br>
-      <input type="number" formControlName="height" step="10">
-  
-    </form>
-    <button class="form-button" (click)="applyCanvasSize()">Aplicar tamaño</button>
-  
   </aside>
-
-
 </main>
 
+<footer><h3>Todos los derechos reservados @Pixel-art-IUSH</h3></footer>
+
+<!-- Modal -->
+
+<input type="checkbox" id="btn-modal-1">
+<div *ngIf="isAuthenticated" class="container-modal modal-1">
+  <div class="content-modal">
+    <h2>¡ Publica tu dibujo !</h2>
+    <form [formGroup]="formPostArt">
+      <section>
+        <article class="formPost">
+          <img *ngIf="previewImageUrl" [src]="previewImageUrl" alt="Previsualización del dibujo" />
+          <p *ngIf="!previewImageUrl">No se ha cargado una imagen</p>
+        </article>
+
+        <article class="formPost">
+          <input formControlName="title" placeholder="Titulo" />
+          <textarea formControlName="description" placeholder="Descripción"></textarea>
+        </article>
+      </section>
+    </form>
+
+    <button class="postArt" (click)="postArt()">Publicar</button>
+
+    <div class="btn-cerrar">
+      <label for="btn-modal-1">Cerrar</label>
+    </div>
+  </div>
+</div>
 
 
-
-
-
-
+<div  *ngIf="!isAuthenticated" class="container-modal modal-1">
+  <div class="content-modal">
+    <h2>¡ Publica tu dibujo !</h2>
+    <h3>Parece que aun no estas registrado</h3>
+    <h4>ingresa para poder subir tus fantasticos dibujos</h4>
+    <button class="postArt" (click)="handleOkRegister()">Registrarse</button>
+    <div class="btn-cerrar">
+      <label for="btn-modal-1">Cerrar</label>
+    </div>
+  </div>
+</div>
