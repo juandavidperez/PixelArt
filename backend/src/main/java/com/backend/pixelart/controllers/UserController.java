@@ -44,19 +44,30 @@ public class UserController {
 	public Optional<UserModel> getUserById(@PathVariable Long id) {
 		return userService.getUserById(id);
 	}
-	
+
+	@GetMapping("/getUsername/{username}")
+	public ResponseEntity<UserModel> getUserByUsername(@PathVariable String username) {
+		Optional<UserModel> userOptional = userService.getUserByUsername(username);
+
+		if (userOptional.isPresent()) {
+			return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@PostMapping(path = "/getUser")
 	public Optional<UserModel> getUserByEmailAndPassword(@RequestBody UserModel user) {
 		return userService.getUserByEmailAndPassword(user);
 	}
 	
 	@PutMapping(path = "/update/{id}")
-	public UserModel updateUserById(@RequestBody UserModel user, Long id) {
+	public UserModel updateUserById(@RequestBody UserModel user, @PathVariable(name = "id") Long id) {
 		return userService.updateById(user, id);
 	}
 	
 	@DeleteMapping(path = "/delete/{id}")
-	public String deleteUser(@PathVariable Long id) {
+	public String deleteUser(@PathVariable(name = "id") Long id) {
 		boolean ok = userService.deleteUser(id);
 		
 		if(ok) {

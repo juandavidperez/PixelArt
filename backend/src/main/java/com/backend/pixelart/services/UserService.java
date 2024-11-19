@@ -30,6 +30,10 @@ public class UserService {
 	public Optional<UserModel> getUserById(Long id) {
 		return userRepository.findById(id);
 	}
+
+	public Optional<UserModel> getUserByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
 	
 	public UserModel updateById(UserModel request, Long id) {
 		UserModel usuario = userRepository.findById(id).get();
