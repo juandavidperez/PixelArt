@@ -47,22 +47,11 @@
 
 <div class="card-container">
 
-  <div class="card">
+  <div class="card" *ngFor="let data of this.pixelArtService.listOfPixelArt">
     <article class="card-article">
-      <h2>ARTICULO</h2>
+      <h2><img src="data:image/png;base64,{{data.image}}" /></h2>
     </article>
   </div>
 
-  <div class="card">
-    <article class="card-article">
-      <h2>ARTICULO</h2>
-    </article>
-  </div>
-
-  <div class="card">
-    <article class="card-article">
-      <h2>ARTICULO</h2>
-    </article>
-  </div>
 </div>
 

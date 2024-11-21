@@ -262,7 +262,8 @@ export class DrawComponent implements OnInit{
         console.error("Error al cargar datos del usuario:", error);
       }
     );
-    window.location.reload();
+
+    alert("¡Dibujo guardado con exito!")
   }
 
   changeBrushSize(size: number) {

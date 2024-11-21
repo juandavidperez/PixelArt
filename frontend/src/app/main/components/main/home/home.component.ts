@@ -1,6 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {CommonModule, NgFor} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
 import {RouterLink} from "@angular/router";
+import {PixelArtService} from "../../../../shared/services/pixelArt/pixel-art.service";
 
 @Component({
   selector: 'app-home',
@@ -8,16 +9,21 @@ import {RouterLink} from "@angular/router";
   styleUrls: ['./home.component.css'],
   imports: [
     RouterLink,
-    CommonModule
+    CommonModule,
+    NgFor
   ],
+  providers:[PixelArtService],
   standalone: true
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   isToken: boolean = false;
 
+  constructor(protected pixelArtService: PixelArtService) {}
+
   ngOnInit() {
-    const token = localStorage.getItem('authToken'); 
+    this.pixelArtService.loadArts();
+    const token = localStorage.getItem('authToken');
 
     if (token) {
       this.isToken = true;
@@ -25,5 +31,5 @@ export class HomeComponent {
       this.isToken = false;
     }
   }
-  
+
 }
