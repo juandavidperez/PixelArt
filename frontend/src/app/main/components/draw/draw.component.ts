@@ -10,11 +10,9 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import {NzButtonModule} from "ng-zorro-antd/button";
 import {TokenUserService} from "../../../shared/services/tokenUser/token-user.service";
 import {Router, RouterLink} from "@angular/router";
 import {PixelArtService} from "../../../shared/services/pixelArt/pixel-art.service";
-import {UserInterface} from "../../../interfaces/user.interface";
 import {UsersService} from "../../../shared/services/users/users.service";
 
 
@@ -27,7 +25,6 @@ import {UsersService} from "../../../shared/services/users/users.service";
     NgOptimizedImage,
     FormsModule,
     ReactiveFormsModule,
-    NzButtonModule,
     NgIf,
     RouterLink
   ],
