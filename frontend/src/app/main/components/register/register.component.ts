@@ -7,15 +7,14 @@ import {UsersService} from "../../../shared/services/users/users.service";
 import {registerUsers} from "../../../interfaces/registerUsers";
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule
-  ],
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+    selector: 'app-register',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule
+    ],
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.css']
 })
 
 export class RegisterComponent implements OnInit{

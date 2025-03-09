@@ -7,15 +7,14 @@ import {UsersService} from "../../../shared/services/users/users.service";
 import {UserInterface} from "../../../interfaces/user.interface";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  imports: [
-    ReactiveFormsModule,
-    RouterModule,
-    CommonModule
-  ],
-  standalone: true
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    imports: [
+        ReactiveFormsModule,
+        RouterModule,
+        CommonModule
+    ]
 })
 export class LoginComponent implements OnInit{
 

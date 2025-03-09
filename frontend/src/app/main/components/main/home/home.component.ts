@@ -4,16 +4,15 @@ import {RouterLink} from "@angular/router";
 import {PixelArtService} from "../../../../shared/services/pixelArt/pixel-art.service";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
-  imports: [
-    RouterLink,
-    CommonModule,
-    NgFor
-  ],
-  providers:[PixelArtService],
-  standalone: true
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css'],
+    imports: [
+        RouterLink,
+        CommonModule,
+        NgFor
+    ],
+    providers: [PixelArtService]
 })
 export class HomeComponent implements OnInit {
 
