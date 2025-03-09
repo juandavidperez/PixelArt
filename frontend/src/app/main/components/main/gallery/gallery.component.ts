@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {PixelArtService} from "../../../../shared/services/pixelArt/pixel-art.service";
-import {NgForOf} from "@angular/common";
+import { NgForOf } from '@angular/common';
 
 @Component({
   selector: 'app-gallery',
