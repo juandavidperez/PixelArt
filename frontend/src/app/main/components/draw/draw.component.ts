@@ -18,19 +18,18 @@ import {UsersService} from "../../../shared/services/users/users.service";
 
 
 @Component({
-  selector: 'app-draw',
-  templateUrl: './draw.component.html',
-  styleUrls: ['./draw.component.css'],
-  imports: [
-    NgOptimizedImage,
-    FormsModule,
-    ReactiveFormsModule,
-    NgIf,
-    RouterLink
-  ],
-  providers: [PixelArtService, UsersService],
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-draw',
+    templateUrl: './draw.component.html',
+    styleUrls: ['./draw.component.css'],
+    imports: [
+        NgOptimizedImage,
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        RouterLink
+    ],
+    providers: [PixelArtService, UsersService],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class DrawComponent implements OnInit{

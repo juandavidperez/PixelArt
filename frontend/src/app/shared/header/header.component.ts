@@ -6,15 +6,14 @@ import { CommonModule } from '@angular/common';
 import {TokenUserService} from "../services/tokenUser/token-user.service";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
-  imports: [
-    RouterLink,
-    FormsModule,
-    CommonModule
-  ],
-  standalone: true
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css'],
+    imports: [
+        RouterLink,
+        FormsModule,
+        CommonModule
+    ]
 })
 export class HeaderComponent implements OnInit{
   searchTerm: string = '';

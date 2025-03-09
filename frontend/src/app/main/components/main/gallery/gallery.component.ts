@@ -3,14 +3,13 @@ import {PixelArtService} from "../../../../shared/services/pixelArt/pixel-art.se
 import { NgForOf } from '@angular/common';
 
 @Component({
-  selector: 'app-gallery',
-  templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.css'],
-  standalone: true,
-  imports: [
-    NgForOf
-  ],
-  providers:[PixelArtService]
+    selector: 'app-gallery',
+    templateUrl: './gallery.component.html',
+    styleUrls: ['./gallery.component.css'],
+    imports: [
+        NgForOf
+    ],
+    providers: [PixelArtService]
 })
 export class GalleryComponent implements OnInit {
 
