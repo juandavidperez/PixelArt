@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {PixelArt, PixelArtCreateDto, PixelArtUpdateDto} from "../../../interfaces/pixelArt.interface";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
