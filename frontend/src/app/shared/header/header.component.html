@@ -1,55 +1,35 @@
-<nav>
 
-  <h3 class="press-start-2p-regular"><a [routerLink]="['/main']">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(63, 96, 247, 1);transform: ;msFilter:;"><path d="m21.743 12.331-9-10c-.379-.422-1.107-.422-1.486 0l-9 10a.998.998 0 0 0-.17 1.076c.16.361.518.593.913.593h2v7a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-4h4v4a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-7h2a.998.998 0 0 0 .743-1.669z"></path></svg>
-    Pixel art </a></h3>
+<p-toolbar [style]="{ 'padding': '1rem 1rem 1rem 1.5rem' }">
+  <ng-template #start>
+    <div class="flex items-center gap-2">
+      <i class="pi pi-align-left" style="font-size: 2rem; color: rgb(138, 0, 180); margin-right: 2rem ;"></i>
+      <app-toggle-theme></app-toggle-theme>
+      </div>
+  </ng-template>
 
+  <ng-template #center>
+    <div class="flex items-center gap-2">
+        <i class="pi pi-home" style="font-size: 2rem; color: rgb(138, 0, 180)"></i>
+        <p-button label="Pixelyze" class="press-start-2p-regular" text plain [routerLink]="['/main']"/>
+        <i class="pi pi-images" style="font-size: 2rem; color: rgb(144, 0, 180)"></i>
+        <p-button label="Galeria" text plain [routerLink]="['/main/gallery']" />
+        
 
-  <div  class="gallery-button">
-    <h4> <a [routerLink]="['/main/gallery']">
-      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" style="fill: rgb(255,0,0);transform: ;msFilter:;"><circle cx="7.499" cy="9.5" r="1.5"></circle><path d="m10.499 14-1.5-2-3 4h12l-4.5-6z"></path><path d="M19.999 4h-16c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm-16 14V6h16l.002 12H3.999z"></path></svg>
-      Galeria
-    </a> </h4>
-  </div>
+    </div>
+</ng-template>
 
-  <ul>
-    <li>
-      <button class="button-draw"><a class="display-a" [routerLink]="['/draw']">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
-          <path d="M4 21a1 1 0 0 0 .24 0l4-1a1 1 0 0 0 .47-.26L21 7.41a2 2 0 0 0 0-2.82L19.42 3a2 2 0 0 0-2.83 0L4.3 15.29a1.06 1.06 0 0 0-.27.47l-1 4A1 1 0 0 0 3.76 21 1 1 0 0 0 4 21zM18 4.41 19.59 6 18 7.59 16.42 6zM5.91 16.51 15 7.41 16.59 9l-9.1 9.1-2.11.52z">
-          </path>
-        </svg>
-
-
-        <span> Empieza a dibujar  </span> </a>
-      </button>
-    </li>
-
-    <ng-container *ngIf="!isToken">
-      <li>
-        <button class="button-login"><a class="display-a" [routerLink]="['/login']">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
-          <path d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2 7.5 4.019 7.5 6.5zM20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h17z">
-          </path>
-        </svg>
-        <span>Iniciar sesion</span>
-      </a>
-      </button>
-      </li>
-    </ng-container>
-
-    <ng-container *ngIf="isToken">
-      <li>
-        <button class="button-login"><a class="display-a" (click)="cerrarSesion()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
-          <path d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2 7.5 4.019 7.5 6.5zM20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h17z">
-          </path>
-        </svg>
-        <span>Cerrar sesion</span>
-      </a>
-      </button>
-      </li>
-    </ng-container>
-  </ul>
-
-</nav>
+  <ng-template #end>
+      <div class="flex items-center gap-2">
+          <p-button label="Empieza a dibujar" severity="success" size="small"  [routerLink]="['/draw']" />
+          
+          <ng-container *ngIf="!isToken">
+            <p-button label="Iniciar sesion" icon="pi pi-user" severity="info" size="small"  [routerLink]="['/login']" />
+          </ng-container>
+          
+          <ng-container  *ngIf="isToken">
+            <p-avatar (click)="cerrarSesion()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" [style]="{ width: '32px', height: '32px' }" />
+          </ng-container>
+          
+       </div>
+  </ng-template>
+</p-toolbar>

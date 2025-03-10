@@ -1,19 +1,26 @@
 import {Component, OnInit} from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
-import { SearchService } from "../services/searchService/search.service";
 import { CommonModule } from '@angular/common';
 import {TokenUserService} from "../services/tokenUser/token-user.service";
+import { ToggleThemeComponent } from "../toggle-theme/toggle-theme.component";
+import {ToolbarModule} from "primeng/toolbar";
+import {Button} from "primeng/button";
+import {Avatar} from "primeng/avatar"; 
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.css'],
     imports: [
-        RouterLink,
-        FormsModule,
-        CommonModule
-    ]
+    RouterLink,
+    FormsModule,
+    CommonModule,
+    ToggleThemeComponent,
+    ToolbarModule,
+    Button,
+    Avatar
+]
 })
 export class HeaderComponent implements OnInit{
   searchTerm: string = '';
