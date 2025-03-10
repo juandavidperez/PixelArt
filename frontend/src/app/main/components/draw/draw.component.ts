@@ -1,11 +1,10 @@
-import {NgIf, NgOptimizedImage} from '@angular/common';
+import {NgIf} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
-  TemplateRef,
   ViewChild
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
@@ -22,7 +21,6 @@ import {UsersService} from "../../../shared/services/users/users.service";
     templateUrl: './draw.component.html',
     styleUrls: ['./draw.component.css'],
     imports: [
-        NgOptimizedImage,
         FormsModule,
         ReactiveFormsModule,
         NgIf,

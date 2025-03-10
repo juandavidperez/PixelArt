@@ -14,7 +14,7 @@ export class UsersService {
   private apiUrl = 'http://localhost:4002/users';
   listOfUsers: UserInterface [] = [];
 
-  constructor(private http: HttpClient, private tokenUserService: TokenUserService) {}
+  constructor(private http: HttpClient) {}
 
   getUsers(): Observable<UserInterface[]>{
     return this.http.get<UserInterface[]>(`${this.apiUrl}/get`);
