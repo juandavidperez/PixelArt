@@ -34,8 +34,11 @@
   <aside class="right">
     <label for="colorPicker">Elige un color:</label> <br>
     <input type="color" id="colorPicker" [(ngModel)]="selectedColor" />
-  </aside>
 
+    <div class="ai-panel">
+      <app-ai-image-generator></app-ai-image-generator>
+    </div>
+  </aside>
 
 </main>
 
@@ -81,3 +84,6 @@
     </div>
   </div>
 </div>
+
+
+
