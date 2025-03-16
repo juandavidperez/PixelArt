@@ -13,6 +13,8 @@ import {TokenUserService} from "../../../shared/services/tokenUser/token-user.se
 import {Router, RouterLink} from "@angular/router";
 import {PixelArtService} from "../../../shared/services/pixelArt/pixel-art.service";
 import {UsersService} from "../../../shared/services/users/users.service";
+import { BrowserModule } from '@angular/platform-browser';
+import { AiImageGeneratorComponent } from "../../../components/ai-image-generator/ai-image-generator.component";
 
 
 
@@ -21,11 +23,13 @@ import {UsersService} from "../../../shared/services/users/users.service";
     templateUrl: './draw.component.html',
     styleUrls: ['./draw.component.css'],
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgIf,
-        RouterLink
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    RouterLink,
+    BrowserModule,
+    AiImageGeneratorComponent
+],
     providers: [PixelArtService, UsersService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })

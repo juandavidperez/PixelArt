@@ -1,6 +1,5 @@
-
-*{
-  overflow-y: hidden !important;
+body{
+  overflow-x: hidden !important;
 }
 
 div{
@@ -34,9 +33,22 @@ nav a{
 
 main{
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   background-color: #111111;
+  padding: 10px;
 }
+
+aside.right {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  gap: 1rem;          
+  width: 25%;
+  background-color: #1e1e1e;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
 
 main aside{
   overflow: hidden ;
@@ -242,4 +254,15 @@ footer{
   text-align: center;
   color: #FFFFFF;
 }
+
+.ai-panel {
+  width: 100%; 
+  background: #2e2e2e;
+  padding: 16px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-top: 1rem;
+}
+
+
 
