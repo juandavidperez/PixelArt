@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class AIExceptionHandler {
 
     @ExceptionHandler(ImageGenerationException.class)
     public ResponseEntity<ErrorResponse> handleImageGenerationException(

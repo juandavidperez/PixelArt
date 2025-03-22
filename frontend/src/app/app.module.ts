@@ -11,7 +11,7 @@ import { HolaComponent } from './hola/hola.component';
 import { DrawComponent } from './main/components/draw/draw.component';
 // import { HolaComponent } from './hola/hola.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { AiImageGeneratorComponent } from './components/ai-image-generator/ai-image-generator.component';
+import { AiImageGeneratorComponent } from './main/components/ai/ai-image-generator.component';
 import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 
