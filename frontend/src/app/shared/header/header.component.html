@@ -1,35 +1,50 @@
-
 <p-toolbar [style]="{ 'padding': '1rem 1rem 1rem 1.5rem' }">
-  <ng-template #start>
+  <ng-template #start >
     <div class="flex items-center gap-2">
-      <i class="pi pi-align-left" style="font-size: 2rem; color: rgb(138, 0, 180); margin-right: 2rem ;"></i>
-      <app-toggle-theme></app-toggle-theme>
-      </div>
+      <i *ngIf="isMobile" class="pi pi-align-left" style="font-size: 2rem; color: rgb(138, 0, 180); cursor: pointer;" (click)="toggleSidebar()"></i>
+      
+      <i *ngIf="!isMobile" class="pi pi-align-left" style="font-size: 2rem; color: rgb(138, 0, 180); margin: 9px;"></i>
+      
+      <app-toggle-theme *ngIf="!isMobile"></app-toggle-theme>
+    </div>
   </ng-template>
 
   <ng-template #center>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2" *ngIf="!isMobile">
         <i class="pi pi-home" style="font-size: 2rem; color: rgb(138, 0, 180)"></i>
-        <p-button label="Pixelyze" class="press-start-2p-regular" text plain [routerLink]="['/main']"/>
-        <i class="pi pi-images" style="font-size: 2rem; color: rgb(144, 0, 180)"></i>
-        <p-button label="Galeria" text plain [routerLink]="['/main/gallery']" />
-        
-
-    </div>
-</ng-template>
+        <p-button label="Pixelyze" icon="pi pi-home" class="press-start-2p-regular" text plain [routerLink]="['/main']"/>
+        <p-button class="custom-button" label="Galeria" icon="pi pi-images" text plain [routerLink]="['/main/gallery']" />
+      </div>
+  </ng-template>
 
   <ng-template #end>
-      <div class="flex items-center gap-2">
-          <p-button label="Empieza a dibujar" severity="success" size="small"  [routerLink]="['/draw']" />
-          
-          <ng-container *ngIf="!isToken">
-            <p-button label="Iniciar sesion" icon="pi pi-user" severity="info" size="small"  [routerLink]="['/login']" />
-          </ng-container>
-          
-          <ng-container  *ngIf="isToken">
-            <p-avatar (click)="cerrarSesion()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" [style]="{ width: '32px', height: '32px' }" />
-          </ng-container>
-          
-       </div>
+    <div class="flex items-center gap-2" *ngIf="!isMobile">
+      <p-button label="Empieza a dibujar" severity="success" size="small" [routerLink]="['/draw']" />
+
+      <ng-container *ngIf="!isToken">
+        <p-button label="Iniciar sesión" icon="pi pi-user" severity="info" size="small" [routerLink]="['/login']" />
+      </ng-container>
+
+      <ng-container *ngIf="isToken">
+        <p-avatar (click)="cerrarSesion()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" [style]="{ width: '32px', height: '32px' }" />
+      </ng-container>
+    </div>
   </ng-template>
 </p-toolbar>
+
+<p-sidebar [(visible)]="sidebarVisible" [baseZIndex]="10000">
+  <div class="sidebar-content">
+    <p-button label="Pixelyze" icon="pi pi-home" text plain class="w-full" [routerLink]="['/main']"></p-button>
+    <p-button label="Galería" icon="pi pi-images" text plain class="w-full" [routerLink]="['/main/gallery']"></p-button>
+    <p-button label="Empieza a dibujar" severity="success" size="small" class="w-full" [routerLink]="['/draw']"></p-button>
+    
+    <ng-container *ngIf="!isToken">
+      <p-button label="Iniciar sesión" icon="pi pi-user" severity="info" size="small" class="w-full" [routerLink]="['/login']"></p-button>
+    </ng-container>
+
+    <ng-container *ngIf="isToken">
+      <p-avatar (click)="cerrarSesion()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mb-2" [style]="{ width: '32px', height: '32px' }" />
+    </ng-container>
+  </div>
+</p-sidebar>
+

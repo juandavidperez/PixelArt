@@ -8,4 +8,9 @@
   font-style: normal;
 }
 
+::ng-deep .custom-button .p-button-icon {
+  font-size: 1.6rem !important;
+  color: rgb(144, 0, 180) !important;
+}
+
 
