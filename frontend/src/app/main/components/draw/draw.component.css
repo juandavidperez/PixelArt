@@ -9,6 +9,7 @@ div{
 
 .draw-square{
   width: 100%
+  
 }
 
 canvas {
@@ -16,6 +17,7 @@ canvas {
   background-repeat: repeat;
   background-size: 420px;
   cursor: crosshair;
+  
 
 }
 
@@ -71,20 +73,21 @@ main aside{
 
 }
 
-aside button{
+aside button {
+  margin: 5px;
+  padding: 5px;
   background-color: transparent;
   border: none;
+  cursor: pointer;
 }
 
-aside button:hover{
-  background-color:rgb(37, 37, 37);
-  border: none;
+aside button:hover {
+  background-color: rgb(37, 37, 37);
 }
 
-button img{
-
-  width: 80px;
-  height: 80px;
+aside button img {
+  width: 50px; /* Reducir el tamaño de las imágenes */
+  height: 50px;
 }
 
 #colorPicker::-webkit-color-swatch {
