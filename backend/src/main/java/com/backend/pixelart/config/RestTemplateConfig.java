@@ -1,4 +1,4 @@
-package config;
+package com.backend.pixelart.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,10 +10,10 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestTemplateConfig {
 
-    @Value("${http.client.timeout.connect}")
+    @Value("${http.client.timeout.connect:30000}")
     private int connectTimeout;
 
-    @Value("${http.client.timeout.read}")
+    @Value("${http.client.timeout.read:120000}")
     private int readTimeout;
 
     @Bean

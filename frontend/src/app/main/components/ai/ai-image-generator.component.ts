@@ -22,7 +22,7 @@ export class AiImageGeneratorComponent {
   errorMessage: string | null = null;
   showPrompt = false;
 
-  constructor(private aiImageService: AiImageService) {} // Inyección del servicio
+  constructor(private aiImageService: AiImageService) {}
 
   togglePrompt() {
     this.showPrompt = !this.showPrompt;
@@ -33,25 +33,28 @@ export class AiImageGeneratorComponent {
       this.errorMessage = 'El prompt no puede estar vacío.';
       return;
     }
+    
     this.loading = true;
     this.errorMessage = null;
-    this.generatedImageUrl = null;
-
+    
+    console.log('Enviando prompt:', this.promptText);
     
     this.aiImageService.generateImage(this.promptText).subscribe({
       next: (response) => {
+        console.log('Respuesta recibida:', response);
         this.loading = false;
         this.generatedImageUrl = response.imageUrl;
+        console.log('URL de imagen asignada:', this.generatedImageUrl);
       },
       error: (err) => {
         console.error('Error al generar imagen:', err);
-        this.errorMessage = 'Ocurrió un error al generar la imagen.';
         this.loading = false;
+        this.errorMessage = 'Ocurrió un error al generar la imagen: ' + (err.message || 'Error desconocido');
       }
     });
   }
 
   enhancePrompt() {
-    alert('Funcionalidad de mejorar prompt en desarrollo...');
+    // Implementación de mejorar prompt
   }
 }

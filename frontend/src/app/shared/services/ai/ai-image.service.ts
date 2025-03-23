@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root' 
 })
 export class AiImageService {
-  private apiUrl = 'http://localhost:8080/api/images/generate'; 
+  private apiUrl = 'http://localhost:4002/api/images/generate'; 
   
 
   constructor(private http: HttpClient) {}
