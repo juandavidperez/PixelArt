@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageResponse {
-    private String prompt;
+    private String imageUrl;
+
+
 }

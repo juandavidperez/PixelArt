@@ -1,28 +1,37 @@
 <div class="ai-container">
-    <h3>Generador de Imágenes AI</h3>
+  <h3>Generador de Imágenes AI</h3>
+  
+  <!-- Botón para desplegar el panel de opciones -->
+  <button (click)="togglePrompt()">
+    {{ showPrompt ? 'Ocultar Opciones' : 'Mostrar Opciones' }}
+  </button>
+  
+  <!-- Panel de opciones - Se despliega solo si showPrompt es true -->
+  <div *ngIf="showPrompt" class="options-panel">
+    <textarea
+      [(ngModel)]="promptText"
+      placeholder="Describe la imagen..."
+      rows="3"
+      class="small-textarea">
+    </textarea>
     
-    <!-- Botón para desplegar el prompt -->
-    <button (click)="togglePrompt()">
-      {{ showPrompt ? 'Ocultar Opciones' : 'Generar Imagen' }}
-    </button>
-    
-    <!-- Se despliega solo si showPrompt es true -->
-    <div *ngIf="showPrompt">
-      <textarea
-        [(ngModel)]="promptText"
-        placeholder="Describe la imagen..."
-        rows="3">
-      </textarea>
-      
-      <div class="button-group">
-        <button (click)="generateImage()" [disabled]="loading">Confirmar</button>
-        <button (click)="enhancePrompt()" [disabled]="loading">Enhance Prompt</button>
-      </div>
-      
-      <div *ngIf="loading" class="loading">Generando imagen...</div>
-      <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-      
-      <img *ngIf="generatedImageUrl" [src]="generatedImageUrl" alt="Imagen generada" />
+    <div class="button-group">
+      <button (click)="generateImage()" [disabled]="loading">Generar Imagen</button>
+      <button (click)="enhancePrompt()" [disabled]="loading">Mejorar Prompt</button>
     </div>
   </div>
   
+  <!-- Sección de respuesta - Siempre visible -->
+  <div class="result-panel">
+    <div *ngIf="loading" class="loading">Generando imagen...</div>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+    
+    
+    <div *ngIf="generatedImageUrl" class="image-container">
+      <h4>Imagen Generada:</h4>
+      <a [href]="generatedImageUrl" target="_blank">
+        <img [src]="generatedImageUrl" alt="Imagen generada" class="generated-image" />
+      </a>
+    </div>
+  </div>
+</div>

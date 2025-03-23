@@ -47,8 +47,8 @@ public class AiImageServiceImpl implements AiImageService {
         requestBody.put("model", "dall-e-3");
 
         // Puedes añadir parámetros de calidad y estilo si estás usando DALL-E 3
-        requestBody.put("quality", "standard"); // o "hd" para alta definición
-        requestBody.put("style", "vivid"); // o "natural" para un estilo más natural
+//        requestBody.put("quality", "standard"); // o "hd" para alta definición
+//        requestBody.put("style", "vivid"); // o "natural" para un estilo más natural
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -72,11 +72,21 @@ public class AiImageServiceImpl implements AiImageService {
 
                 if (responseBody != null && responseBody.containsKey("data")) {
                     Object data = responseBody.get("data");
+                    log.info("Data de respuesta: {}", data);
+
                     if (data instanceof java.util.List && !((java.util.List<?>) data).isEmpty()) {
                         Object firstImage = ((java.util.List<?>) data).get(0);
                         if (firstImage instanceof Map) {
-                            String imageUrl = (String) ((Map<?, ?>) firstImage).get("url");
-                            return new ImageResponse(imageUrl);
+                            Map<?, ?> imageMap = (Map<?, ?>) firstImage;
+                            String imageUrl = (String) imageMap.get("url");
+
+                            if (imageUrl != null) {
+                                log.info("URL de imagen extraída: {}", imageUrl);
+                                return new ImageResponse(imageUrl);
+                            } else {
+                                log.error("No se encontró la URL en la respuesta");
+                                throw new ImageGenerationException("URL de imagen no encontrada en la respuesta");
+                            }
                         }
                     }
                     throw new ImageGenerationException("Formato de respuesta inesperado");
