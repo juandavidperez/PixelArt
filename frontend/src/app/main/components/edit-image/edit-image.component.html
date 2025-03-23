@@ -1,0 +1,44 @@
+<div class="ai-container">
+    <h3>Editar Imagen con IA</h3>
+    
+    <!-- Campo para describir la edición -->
+    <div class="form-group">
+      <label for="prompt">Describe la edición que deseas:</label>
+      <textarea
+        id="prompt"
+        [(ngModel)]="promptText"
+        placeholder="Ej: Transformar la imagen a pixel art en 8 bits"
+        rows="3"
+        class="small-textarea">
+      </textarea>
+    </div>
+    
+    <!-- Selección de archivo -->
+    <div class="form-group">
+      <label for="file">Selecciona una imagen:</label>
+      <div class="file-input-container">
+        <input type="file" id="file" (change)="onFileSelected($event)" accept="image/png">
+        <label for="file" class="file-input-label">Seleccionar archivo</label>
+      </div>
+    </div>
+    
+    <!-- Botón para subir la imagen -->
+    <button (click)="onUpload()" [disabled]="!selectedFile || !promptText || isLoading">
+      {{ isLoading ? 'Subiendo...' : 'Subir Imagen' }}
+    </button>
+    
+    <!-- Mensajes de estado -->
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    
+    <!-- Spinner de carga -->
+    <div *ngIf="isLoading" class="loading">Generando imagen...</div>
+    
+    <!-- Imagen generada -->
+    <div *ngIf="imageUrl" class="image-container">
+      <h4>Imagen editada:</h4>
+      <a [href]="imageUrl" target="_blank">
+        <img [src]="imageUrl" alt="Imagen Generada" class="generated-image" />
+      </a>
+    </div>
+  </div>

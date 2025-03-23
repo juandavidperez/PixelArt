@@ -1,0 +1,134 @@
+/* Contenedor principal */
+.ai-container {
+    max-width: 500px;
+    margin: auto;
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  /* Título */
+  h3 {
+    color: #fff;
+    margin-bottom: 15px;
+  }
+  
+  /* Grupo de formulario */
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  /* Etiquetas */
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  /* Campo de texto */
+  textarea {
+    width: 100%;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background: #333;
+    color: white;
+    resize: none; /* Evita que se pueda redimensionar */
+    height: 80px; /* Ajusta la altura */
+  }
+  
+  /* Contenedor del input de archivo */
+  .file-input-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .file-input-container input[type="file"] {
+    font-size: 16px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  /* Etiqueta personalizada para el input de archivo */
+  .file-input-label {
+    display: block;
+    padding: 12px;
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .file-input-label:hover {
+    background-color: #444;
+  }
+  
+  /* Botón */
+  button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  button:hover {
+    background-color: #357ab8;
+  }
+  
+  button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+  }
+  
+  /* Mensajes de estado */
+  .error {
+    color: #d32f2f;
+    margin: 15px 0;
+    font-weight: bold;
+  }
+  
+  .success-message {
+    color: #28a745;
+    margin: 15px 0;
+    font-weight: bold;
+  }
+  
+  .loading {
+    margin: 15px 0;
+    color: #bbb;
+  }
+  
+  /* Contenedor de la imagen generada */
+  .image-container {
+    margin-top: 15px;
+  }
+  
+  /* Imagen generada */
+  .generated-image {
+    width: 100%;
+    max-width: 250px; /* Ajusta el tamaño de la imagen */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .generated-image:hover {
+    transform: scale(1.05);
+  }

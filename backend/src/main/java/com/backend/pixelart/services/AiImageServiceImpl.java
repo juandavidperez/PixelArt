@@ -5,9 +5,13 @@ import com.backend.pixelart.dto.PromptRequest;
 import com.backend.pixelart.exceptions.ImageGenerationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,6 +99,74 @@ public class AiImageServiceImpl implements AiImageService {
             } catch (Exception e) {
                 log.error("Error al comunicarse con OpenAI: {}", e.getMessage(), e);
                 throw new ImageGenerationException("Error al generar imagen: " + e.getMessage(), e);
+            }
+        });
+    }
+
+    public CompletableFuture<ImageResponse> editImage(MultipartFile image, String prompt) {
+        String editImageUrl = "https://api.openai.com/v1/images/edits";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(this.apiKey);
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        // Convertir imagen a ByteArrayResource
+        ByteArrayResource imageResource;
+        try {
+            imageResource = new ByteArrayResource(image.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return image.getOriginalFilename() != null ? image.getOriginalFilename() : "image.png";
+                }
+            };
+        } catch (Exception e) {
+            log.error("Error al convertir la imagen: {}", e.getMessage(), e);
+            throw new ImageGenerationException("Error al convertir la imagen: " + e.getMessage(), e);
+        }
+
+        // Construcción del cuerpo multipart
+        MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("model", "dall-e-2");
+        requestBody.add("prompt", prompt);
+        requestBody.add("image", imageResource);
+
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                ResponseEntity<Map> response = restTemplate.exchange(
+                        editImageUrl,
+                        HttpMethod.POST,
+                        entity,
+                        Map.class
+                );
+
+                Map responseBody = response.getBody();
+                log.info("Respuesta del API de OpenAI: {}", responseBody); // Verifica la respuesta
+
+                if (responseBody != null && responseBody.containsKey("data")) {
+                    Object data = responseBody.get("data");
+                    log.info("Data de respuesta: {}", data); // Verifica la estructura de 'data'
+
+                    if (data instanceof java.util.List && !((java.util.List<?>) data).isEmpty()) {
+                        Object firstImage = ((java.util.List<?>) data).get(0);
+                        log.info("Primera imagen: {}", firstImage); // Verifica la primera imagen
+
+                        if (firstImage instanceof Map) {
+                            Map<?, ?> imageMap = (Map<?, ?>) firstImage;
+                            String imageUrl = (String) imageMap.get("url");
+                            log.info("URL de la imagen: {}", imageUrl); // Verifica la URL
+
+                            if (imageUrl != null) {
+                                log.info("Imagen editada generada exitosamente: {}", imageUrl);
+                                return new ImageResponse(imageUrl);
+                            }
+                        }
+                    }
+                }
+                throw new ImageGenerationException("Formato de respuesta inesperado al editar imagen");
+            } catch (Exception e) {
+                log.error("Error al editar imagen: {}", e.getMessage(), e);
+                throw new ImageGenerationException("Error al procesar la edición de la imagen", e);
             }
         });
     }
