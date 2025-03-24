@@ -122,7 +122,7 @@ public class AiImageServiceImpl implements AiImageService {
             log.error("Error al convertir la imagen: {}", e.getMessage(), e);
             throw new ImageGenerationException("Error al convertir la imagen: " + e.getMessage(), e);
         }
-
+        //String enhancedPrompt = combinePrompts(systemPrompt, prompt); Dalle 2 se confunde muy facil
         // Construcción del cuerpo multipart
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("model", "dall-e-2");
