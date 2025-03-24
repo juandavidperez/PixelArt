@@ -11,13 +11,14 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrls: ['./edit-image.component.css'],
   imports: [NgIf, FormsModule]
 })
-export class ImageEditorComponent {
+export class EditImageComponent {
   selectedFile: File | null = null;
   imageUrl: string | null = null;
   errorMessage: string = '';
   isLoading = false;
   promptText: string = ''; 
   successMessage: string = '';
+  isMenuOpen = false;
 
   constructor(private http: HttpClient, private aiImageService: AiImageService, private cdr: ChangeDetectorRef) {}
 
@@ -49,6 +50,7 @@ export class ImageEditorComponent {
       this.errorMessage = 'Por favor, ingresa un prompt';
       return;
     }
+  
 
     this.isLoading = true;
     this.errorMessage = '';
@@ -57,6 +59,7 @@ export class ImageEditorComponent {
       .subscribe({
         next: (response) => {
             this.imageUrl = response.imageUrl;
+            
             this.successMessage = 'Imagen editada exitosamente'; // Mensaje de éxito
             this.isLoading = false;
           this.cdr.detectChanges();
@@ -68,5 +71,9 @@ export class ImageEditorComponent {
           this.isLoading = false;
         }
       });
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 }

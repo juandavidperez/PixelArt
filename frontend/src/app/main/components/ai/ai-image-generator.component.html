@@ -1,17 +1,15 @@
 <div class="ai-container">
-  <h3>Generador de Imágenes AI</h3>
-  
-  <!-- Botón para desplegar el panel de opciones -->
   <button (click)="togglePrompt()">
-    {{ showPrompt ? 'Ocultar Opciones' : 'Mostrar Opciones' }}
+    {{ showPrompt ? 'Ocultar IA' : 'Generar con IA' }}
   </button>
   
-  <!-- Panel de opciones - Se despliega solo si showPrompt es true -->
   <div *ngIf="showPrompt" class="options-panel">
+    <h3>Generador de Imágenes AI</h3>
+    
     <textarea
       [(ngModel)]="promptText"
       placeholder="Describe la imagen..."
-      rows="3"
+      rows="2"
       class="small-textarea">
     </textarea>
     
@@ -19,13 +17,9 @@
       <button (click)="generateImage()" [disabled]="loading">Generar Imagen</button>
       <button (click)="enhancePrompt()" [disabled]="loading">Mejorar Prompt</button>
     </div>
-  </div>
-  
-  <!-- Sección de respuesta - Siempre visible -->
-  <div class="result-panel">
+
     <div *ngIf="loading" class="loading">Generando imagen...</div>
     <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-    
     
     <div *ngIf="generatedImageUrl" class="image-container">
       <h4>Imagen Generada:</h4>

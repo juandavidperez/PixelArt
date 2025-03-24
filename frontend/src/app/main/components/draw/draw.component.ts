@@ -15,7 +15,7 @@ import {PixelArtService} from "../../../shared/services/pixelArt/pixel-art.servi
 import {UsersService} from "../../../shared/services/users/users.service";
 import { BrowserModule } from '@angular/platform-browser';
 import { AiImageGeneratorComponent } from "../ai/ai-image-generator.component";
-import { ImageEditorComponent } from '../edit-image/edit-image.component';
+import { EditImageComponent } from '../edit-image/edit-image.component';
 
 
 @Component({
@@ -29,7 +29,7 @@ import { ImageEditorComponent } from '../edit-image/edit-image.component';
       RouterLink,
       BrowserModule,
       AiImageGeneratorComponent,
-      ImageEditorComponent 
+      EditImageComponent 
 ],
     providers: [PixelArtService, UsersService],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -280,4 +280,3 @@ export class DrawComponent implements OnInit{
 
 
 }
-
