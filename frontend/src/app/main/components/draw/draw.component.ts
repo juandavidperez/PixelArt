@@ -65,9 +65,9 @@ export class DrawComponent implements OnInit{
   selectedColor: string = '#000000';
   isDrawing: boolean = false;
   pixelData: string[][] = [];
-  canvasWidth: number = 600;
-  canvasHeight: number = 600;
-  brushSize: number = 10;
+  canvasWidth: number = 400;
+  canvasHeight: number = 400;
+  brushSize: number = 5;
   isBucketActive: boolean = false;
   isAuthenticated: boolean = false;
   previewImageUrl: string | null = null;
@@ -80,7 +80,7 @@ export class DrawComponent implements OnInit{
     this.openPostModal()
     this.setupCanvas();
     this.isAuthenticated = this.token.isAuthenticated();
-
+    
   }
 
   triggerChangeDetection() {
@@ -111,8 +111,8 @@ export class DrawComponent implements OnInit{
   }
 
   initializePixelData(width: number, height: number) {
-    const rows = Math.floor(height / 10);
-    const cols = Math.floor(width / 10);
+    const rows = Math.ceil(height / this.brushSize); 
+    const cols = Math.ceil(width / this.brushSize); 
     this.pixelData = Array.from({ length: rows }, () => Array(cols).fill('transparent'));
   }
 
@@ -129,8 +129,9 @@ export class DrawComponent implements OnInit{
     if (!this.isDrawing) return;
 
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    const x = Math.floor((event.clientX - rect.left) / this.brushSize) * this.brushSize;
-    const y = Math.floor((event.clientY - rect.top) / this.brushSize) * this.brushSize;
+    const scaleFactor = 1.5;
+    const x = Math.floor(((event.clientX - rect.left) / scaleFactor) / this.brushSize) * this.brushSize;
+    const y = Math.floor(((event.clientY - rect.top) / scaleFactor) / this.brushSize) * this.brushSize;
 
     if (this.selectedColor === 'transparent') {
       this.erase(x, y);

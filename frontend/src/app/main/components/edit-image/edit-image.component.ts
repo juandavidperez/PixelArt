@@ -4,12 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { NgIf } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
+import {CommonModule} from '@angular/common';
 @Component({
   selector: 'app-edit-image',
   standalone: true,
   templateUrl: './edit-image.component.html',
   styleUrls: ['./edit-image.component.css'],
-  imports: [NgIf, FormsModule]
+  imports: [NgIf, FormsModule, CommonModule]
 })
 export class EditImageComponent {
   selectedFile: File | null = null;
@@ -35,7 +36,7 @@ export class EditImageComponent {
         return;
       }
 
-      this.errorMessage = ''; // Limpiar errores anteriores
+      this.errorMessage = ''; 
     }
   }
 
@@ -60,7 +61,7 @@ export class EditImageComponent {
         next: (response) => {
             this.imageUrl = response.imageUrl;
             
-            this.successMessage = 'Imagen editada exitosamente'; // Mensaje de éxito
+            this.successMessage = 'Imagen editada exitosamente'; 
             this.isLoading = false;
           this.cdr.detectChanges();
           this.isLoading = false;
@@ -72,6 +73,34 @@ export class EditImageComponent {
         }
       });
   }
+  
+  abrirImagen() {
+    if (!this.imageUrl) return;
+  
+    // If the image is already a URL, open it normally
+    if (!this.imageUrl.startsWith('data:image')) {
+      window.open(this.imageUrl, '_blank');
+      return;
+    }
+  
+    // Convert Base64 to a Blob
+    const byteString = atob(this.imageUrl.split(',')[1]);
+    const mimeString = this.imageUrl.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
+    
+    for (let i = 0; i < byteString.length; i++) {
+      uint8Array[i] = byteString.charCodeAt(i);
+    }
+  
+    const blob = new Blob([uint8Array], { type: mimeString });
+    const blobUrl = URL.createObjectURL(blob);
+  
+    // Open in a new tab
+    window.open(blobUrl, '_blank');
+  }
+  
+  
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;

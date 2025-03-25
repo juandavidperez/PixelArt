@@ -24,7 +24,7 @@
     <div *ngIf="generatedImageUrl" class="image-container">
       <h4>Imagen Generada:</h4>
       <a [href]="generatedImageUrl" target="_blank">
-        <img [src]="generatedImageUrl" alt="Imagen generada" class="generated-image" />
+        <img [src]="generatedImageUrl" alt="Imagen generada" class="generated-image" (click)="abrirImagen()" />
       </a>
     </div>
   </div>

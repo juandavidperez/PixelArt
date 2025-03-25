@@ -47,6 +47,32 @@ export class AiImageGeneratorComponent {
     });
   }
 
+  abrirImagen() {
+    if (!this.generatedImageUrl) return;
+  
+    // If the image is already a URL, open it normally
+    if (!this.generatedImageUrl.startsWith('data:image')) {
+      window.open(this.generatedImageUrl, '_blank');
+      return;
+    }
+  
+    // Convert Base64 to a Blob
+    const byteString = atob(this.generatedImageUrl!.split(',')[1]);
+    const mimeString = this.generatedImageUrl!.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
+    
+    for (let i = 0; i < byteString.length; i++) {
+      uint8Array[i] = byteString.charCodeAt(i);
+    }
+  
+    const blob = new Blob([uint8Array], { type: mimeString });
+    const blobUrl = URL.createObjectURL(blob);
+  
+    // Open in a new tab
+    window.open(blobUrl, '_blank');
+  }
+
   enhancePrompt() {
     // Implementación de mejorar prompt
   }
