@@ -27,7 +27,18 @@ h3 {
   margin-bottom: 5px;
   text-align: left;
 }
+.options-panel {
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: max-height 0.3s ease-in-out, visibility 0s 0.3s;
+}
 
+.options-panel.open {
+  max-height: 300px; /* Ajusta según el contenido */
+  visibility: visible;
+  transition: max-height 0.3s ease-in-out;
+}
 /* Etiquetas */
 label {
   display: block;
@@ -35,7 +46,9 @@ label {
   font-weight: bold;
   color: #fff;
 }
-
+button.active {
+  background-color: #357ab8;
+}
 /* Campo de texto */
 textarea {
   width: 100%;

@@ -1,9 +1,9 @@
 <div class="ai-container">
-  <button (click)="toggleMenu()">
+  <button [ngClass]="{ 'active': isMenuOpen }" (click)="toggleMenu()">
     {{ isMenuOpen ? 'Ocultar Editor' : 'Editar Imagen' }}
   </button>
   
-  <div *ngIf="isMenuOpen" class="options-panel">
+  <div [ngClass]="{ 'open': isMenuOpen }" class="options-panel">
     <h3>Editor de Imágenes</h3>
     
     <textarea
@@ -31,7 +31,7 @@
     <div *ngIf="imageUrl" class="image-container">
       <h4>Imagen editada:</h4>
       <a [href]="imageUrl" target="_blank">
-        <img [src]="imageUrl" alt="Imagen Generada" class="generated-image" />
+        <img [src]="imageUrl" alt="Imagen Generada" class="generated-image" (click)="abrirImagen()" />
       </a>
     </div>
   </div>
