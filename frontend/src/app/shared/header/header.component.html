@@ -1,25 +1,25 @@
 <p-toolbar [style]="{ 'padding': '1rem 1rem 1rem 1.5rem' }">
   <ng-template #start >
     <div class="flex items-center gap-2">
-      <i *ngIf="isMobile" class="pi pi-align-left" style="font-size: 2rem; color: rgb(138, 0, 180); cursor: pointer;" (click)="toggleSidebar()"></i>
       
-      <i *ngIf="!isMobile" class="pi pi-align-left" style="font-size: 2rem; color: rgb(138, 0, 180); margin: 9px;"></i>
+      <i *ngIf="!isMobile" class="pi pi-align-left" style="font-size: 2rem; color: rgb(138, 0, 180); margin: 9px; cursor: pointer;" (click)="toggleSidebar()"></i>
+      <p-button label="Pixelyze" icon="pi pi-home" class="press-start-2p-regular custom-button" severity="secondary" plain [routerLink]="['/main']"/>
+      <p-button class="custom-button" label="Galeria" icon="pi pi-images" severity="secondary" [routerLink]="['/main/gallery']" />
+  
       
-      <app-toggle-theme *ngIf="!isMobile"></app-toggle-theme>
     </div>
   </ng-template>
 
   <ng-template #center>
     <div class="flex items-center gap-2" *ngIf="!isMobile">
-        <i class="pi pi-home" style="font-size: 2rem; color: rgb(138, 0, 180)"></i>
-        <p-button label="Pixelyze" icon="pi pi-home" class="press-start-2p-regular" text plain [routerLink]="['/main']"/>
-        <p-button class="custom-button" label="Galeria" icon="pi pi-images" text plain [routerLink]="['/main/gallery']" />
-      </div>
+    </div>
   </ng-template>
 
   <ng-template #end>
     <div class="flex items-center gap-2" *ngIf="!isMobile">
+      <app-toggle-theme *ngIf="!isMobile"></app-toggle-theme>
       <p-button label="Empieza a dibujar" severity="success" size="small" [routerLink]="['/draw']" />
+      <p-button label="Empieza a dibujar test" severity="warn" size="small" [routerLink]="['/drawTest']" />
 
       <ng-container *ngIf="!isToken">
         <p-button label="Iniciar sesión" icon="pi pi-user" severity="info" size="small" [routerLink]="['/login']" />
@@ -34,10 +34,17 @@
 
 <p-sidebar [(visible)]="sidebarVisible" [baseZIndex]="10000">
   <div class="sidebar-content">
+
     <p-button label="Pixelyze" icon="pi pi-home" text plain class="w-full" [routerLink]="['/main']"></p-button>
-    <p-button label="Galería" icon="pi pi-images" text plain class="w-full" [routerLink]="['/main/gallery']"></p-button>
-    <p-button label="Empieza a dibujar" severity="success" size="small" class="w-full" [routerLink]="['/draw']"></p-button>
-    
+
+    <ng-container>
+      <p-button label="Pixelyze" icon="pi pi-home" text plain [routerLink]="['/main']"></p-button>
+    </ng-container>
+
+    <ng-container>
+      <p-button label="Galería" icon="pi pi-images" text plain class="w-full" [routerLink]="['/main/gallery']"></p-button>
+    </ng-container>
+
     <ng-container *ngIf="!isToken">
       <p-button label="Iniciar sesión" icon="pi pi-user" severity="info" size="small" class="w-full" [routerLink]="['/login']"></p-button>
     </ng-container>

@@ -1,16 +1,5 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-.press-start-2p-regular{
-  padding-left: 15px;
-  font-family: "Press Start 2P", system-ui;
-  font-weight:200;
-  font-style: normal;
-}
-
 ::ng-deep .custom-button .p-button-icon {
   font-size: 1.6rem !important;
   color: rgb(144, 0, 180) !important;
 }
-
 
