@@ -41,7 +41,7 @@ public class AiImageServiceImpl implements AiImageService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        log.info("API Key utilizada: '{}'", apiKey);
+
         headers.set("Authorization", "Bearer " + apiKey);
 
         HttpEntity<PixelLabRequest> requestEntity = new HttpEntity<>(request, headers);

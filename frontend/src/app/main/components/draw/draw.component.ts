@@ -10,7 +10,7 @@ import {
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import {TokenUserService} from "../../../shared/services/tokenUser/token-user.service";
-import {Router, RouterLink} from "@angular/router";
+import {Router} from "@angular/router";
 import {PixelArtService} from "../../../shared/services/pixelArt/pixel-art.service";
 import {UsersService} from "../../../shared/services/users/users.service";
 import { BrowserModule } from '@angular/platform-browser';
@@ -26,7 +26,6 @@ import { EditImageComponent } from '../edit-image/edit-image.component';
       FormsModule,
       ReactiveFormsModule,
       NgIf,
-      RouterLink,
       BrowserModule,
       AiImageGeneratorComponent,
       EditImageComponent 
@@ -56,7 +55,12 @@ export class DrawComponent implements OnInit{
       title: ['', Validators.required],
       description: ['', Validators.required],
     });
+  }
 
+  navigateToMain() {
+    this.router.navigate(['/main'], { skipLocationChange: false }).then(() => {
+      window.location.reload();
+    });
   }
 
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
