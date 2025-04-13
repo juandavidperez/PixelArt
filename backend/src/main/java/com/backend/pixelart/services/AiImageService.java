@@ -9,5 +9,6 @@ import java.util.concurrent.CompletableFuture;
 public interface AiImageService {
     CompletableFuture<ImageResponse> generateImage(PromptRequest promptRequest);
     CompletableFuture<ImageResponse> editImage(MultipartFile image, String prompt);
+    CompletableFuture<ImageResponse> generateAnimation(MultipartFile image,  PromptRequest promptRequest, String action);
 
 }
