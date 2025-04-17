@@ -32,11 +32,31 @@
   </article>
 
   <aside class="right">
-    <label for="colorPicker">Elige un color:</label> <br>
+    <label for="colorPicker">Elige un color:</label>
     <input type="color" id="colorPicker" [(ngModel)]="selectedColor" />
-
-    <div class="ai-panel">
-      <app-ai-image-generator></app-ai-image-generator>
+    
+    <div class="ai-controls">
+      <button (click)="toggleAITools()" class="ai-toggle-button">
+        {{ showAITools ? 'Ocultar IA' : 'Mostrar IA' }}
+      </button>
+  
+      <div *ngIf="showAITools" class="ai-content">
+        <div class="ai-tabs">
+          <button (click)="activeAITab = 'image'" 
+                  [class.active]="activeAITab === 'image'">
+            Generar Imagen
+          </button>
+          <button (click)="activeAITab = 'animation'" 
+                  [class.active]="activeAITab === 'animation'">
+            Generar Animación
+          </button>
+        </div>
+  
+        <div class="ai-tab-content">
+          <app-ai-image-generator *ngIf="activeAITab === 'image'"></app-ai-image-generator>
+          <app-ai-animation-generator *ngIf="activeAITab === 'animation'"></app-ai-animation-generator>
+        </div>
+      </div>
     </div>
   </aside>
 </main>

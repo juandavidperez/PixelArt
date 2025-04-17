@@ -291,3 +291,74 @@ footer {
   width: 100%;
   
 }
+/* AI Controls Container */
+/* AI Controls Container */
+.ai-controls {
+  background: #2d2d2d;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+/* Toggle Button */
+.ai-toggle-button {
+  background: #3f60f7;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+
+.ai-toggle-button:hover {
+  background: #2a4bc0;
+}
+
+/* Content Area */
+.ai-content {
+  display: block;
+  background: #383838;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+/* Tab Buttons */
+.ai-tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.ai-tabs button {
+  flex: 1;
+  padding: 6px 0;
+  background: #3a3a3a;
+  color: #ddd;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.ai-tabs button.active {
+  background: #3f60f7;
+  color: white;
+}
+
+/* Tab Content */
+.ai-tab-content {
+  min-height: 300px;
+}
+
+/* Ensure components are visible */
+app-ai-image-generator,
+app-ai-animation-generator {
+  display: block;
+  width: 100%;
+}

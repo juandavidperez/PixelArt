@@ -13,11 +13,10 @@ import {TokenUserService} from "../../../shared/services/tokenUser/token-user.se
 import {Router} from "@angular/router";
 import {PixelArtService} from "../../../shared/services/pixelArt/pixel-art.service";
 import {UsersService} from "../../../shared/services/users/users.service";
-import { BrowserModule } from '@angular/platform-browser';
 import { AiImageGeneratorComponent } from "../ai/ai-image-generator.component";
 import { EditImageComponent } from '../edit-image/edit-image.component';
-
-
+import { AiAnimationGeneratorComponent } from '../ai/ai-animation-generator/ai-animation-generator.component';
+import { NgSwitch, NgSwitchCase } from '@angular/common';
 @Component({
     selector: 'app-draw',
     templateUrl: './draw.component.html',
@@ -26,15 +25,33 @@ import { EditImageComponent } from '../edit-image/edit-image.component';
       FormsModule,
       ReactiveFormsModule,
       NgIf,
-      BrowserModule,
       AiImageGeneratorComponent,
-      EditImageComponent 
+      EditImageComponent,
+      AiAnimationGeneratorComponent,
+
 ],
     providers: [PixelArtService, UsersService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class DrawComponent implements OnInit{
+
+  showAITools = false;
+  activeAITab: 'image' | 'animation' = 'image';
+
+  
+  toggleAITools() {
+    this.showAITools = !this.showAITools;
+    this.cd.detectChanges(); // Force change detection
+  }
+
+  
+  setActiveTab(tab: 'image' | 'animation') {
+    this.activeAITab = tab;
+    this.cd.detectChanges(); // Force change detection
+  }
+
+
 
   constructor(private fb: FormBuilder,
               protected token: TokenUserService,
@@ -84,6 +101,13 @@ export class DrawComponent implements OnInit{
     this.openPostModal()
     this.setupCanvas();
     this.isAuthenticated = this.token.isAuthenticated();
+    const interval = setInterval(() => {
+      console.log('Current showAITools:', this.showAITools);
+      if (!this.showAITools && document.querySelector('.ai-content')) {
+        console.warn('Zombie component detected!');
+        this.cd.detectChanges();
+      }
+    }, 1000);
     
   }
 
