@@ -127,31 +127,24 @@ public class AiImageServiceImpl implements AiImageService {
         });
     }
 
+
     @Override
-    public CompletableFuture<ImageResponse> generateAnimation(MultipartFile image, PromptRequest promptRequest,
-                                                              String action){
+    public CompletableFuture<ImageResponse> generateAnimation(PixelLabAnimationRequest request) {
         return CompletableFuture.supplyAsync(() -> {
-            try{
-                PixelLabAnimationRequest request = new PixelLabAnimationRequest();
-                request.setDescription(promptRequest.getPrompt());
-                request.setAction(action);
+            try {
+                log.info("Sending Animation request: description: {}, action: {}", request.getDescription(), request.getAction());
 
-                log.info("Sending Animation request: promp: {} , Action: {}", promptRequest, action);
-
-                byte[] imageBytes = image.getBytes();
-                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-
-                PixelLabAnimationRequest.Base64Image referenceImage = new PixelLabAnimationRequest.Base64Image();
-                referenceImage.base64 = base64Image;
-                request.reference_image = referenceImage;
+                if (request.reference_image == null || request.reference_image.base64 == null) {
+                    throw new IllegalArgumentException("Reference image is required");
+                }
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
-                headers.set("Authorization","Bearer "+ apiKey);
+                headers.set("Authorization", "Bearer " + apiKey);
 
                 HttpEntity<PixelLabAnimationRequest> requestHttpEntity =
                         new HttpEntity<>(request, headers);
-                String animationApiUrl ="https://api.pixellab.ai/v1/animate-with-text";
+                String animationApiUrl = "https://api.pixellab.ai/v1/animate-with-text";
 
                 ResponseEntity<PixelLabAnimationResponse> response = restTemplate.exchange(
                         animationApiUrl,
@@ -162,14 +155,13 @@ public class AiImageServiceImpl implements AiImageService {
 
                 PixelLabAnimationResponse responseBody = response.getBody();
                 if (responseBody != null && responseBody.getImages() != null && !responseBody.getImages().isEmpty()) {
-                    // Convert base64 frames to BufferedImages
                     List<PixelLabAnimationResponse.Base64Image> frames = responseBody.getImages();
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
                     AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
                     gifEncoder.start(outputStream);
                     gifEncoder.setRepeat(0); // loop forever
-                    gifEncoder.setDelay(100); // frame delay in ms (adjust as needed)
+                    gifEncoder.setDelay(100); // frame delay in ms
 
                     for (PixelLabAnimationResponse.Base64Image frame : frames) {
                         byte[] decodedBytes = Base64.getDecoder().decode(frame.base64);
@@ -185,15 +177,15 @@ public class AiImageServiceImpl implements AiImageService {
                     String gifDataUrl = "data:image/gif;base64," + base64Gif;
 
                     return new ImageResponse(gifDataUrl);
-
                 }
+
                 throw new ImageGenerationException("Empty response from PixelLab Animation API");
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error("Error generating animation with PixelLab: {}", e.getMessage(), e);
-                throw new ImageGenerationException("Error generating animation" + e.getMessage(),e);
-
+                throw new ImageGenerationException("Error generating animation: " + e.getMessage(), e);
             }
         });
     }
+
 }

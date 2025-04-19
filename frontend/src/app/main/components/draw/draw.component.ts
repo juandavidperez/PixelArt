@@ -86,8 +86,8 @@ export class DrawComponent implements OnInit{
   selectedColor: string = '#000000';
   isDrawing: boolean = false;
   pixelData: string[][] = [];
-  canvasWidth: number = 400;
-  canvasHeight: number = 400;
+  canvasWidth: number = 64;
+  canvasHeight: number = 64;
   brushSize: number = 5;
   isBucketActive: boolean = false;
   isAuthenticated: boolean = false;

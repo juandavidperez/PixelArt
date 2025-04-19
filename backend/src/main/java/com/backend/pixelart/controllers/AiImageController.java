@@ -1,5 +1,6 @@
 package com.backend.pixelart.controllers;
 
+import com.backend.pixelart.dto.PixelLabAnimationRequest;
 import com.backend.pixelart.dto.PromptRequest;
 import com.backend.pixelart.dto.ImageResponse;
 import com.backend.pixelart.services.AiImageService;
@@ -50,19 +51,13 @@ public class AiImageController {
                 });
     }
 
-    @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
-    @PostMapping(value = "/generate-animation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public CompletableFuture<ResponseEntity<ImageResponse>> generateAnimation(
-            @RequestParam("image") MultipartFile image,
-            @RequestParam("prompt") String prompt,
-            @RequestParam("action") String action) {
-        if (image.isEmpty()) {
-            throw new IllegalArgumentException("Image file is required");
-        }
-        PromptRequest promptRequest = new PromptRequest();
-        promptRequest.setPrompt(prompt);
 
-        return aiImageService.generateAnimation(image, promptRequest, action)
+    @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+    @PostMapping(value = "/generate-animation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public CompletableFuture<ResponseEntity<ImageResponse>> generateAnimation(
+            @RequestBody PixelLabAnimationRequest request) {
+
+        return aiImageService.generateAnimation(request)
                 .thenApply(response -> {
                     log.info("Generated animation response: {}", response);
                     return ResponseEntity.ok(response);
@@ -72,4 +67,5 @@ public class AiImageController {
                     return ResponseEntity.status(500).body(new ImageResponse(null));
                 });
     }
+
 }
