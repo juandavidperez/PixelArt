@@ -56,7 +56,6 @@ public class AiImageController {
     @PostMapping(value = "/generate-animation", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CompletableFuture<ResponseEntity<ImageResponse>> generateAnimation(
             @RequestBody PixelLabAnimationRequest request) {
-
         return aiImageService.generateAnimation(request)
                 .thenApply(response -> {
                     log.info("Generated animation response: {}", response);
