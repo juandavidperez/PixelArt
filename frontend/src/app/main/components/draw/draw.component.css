@@ -291,8 +291,7 @@ footer {
   width: 100%;
   
 }
-/* AI Controls Container */
-/* AI Controls Container */
+
 .ai-controls {
   background: #2d2d2d;
   padding: 10px;
@@ -301,7 +300,7 @@ footer {
   width: 100%;
 }
 
-/* Toggle Button */
+
 .ai-toggle-button {
   background: #3f60f7;
   color: white;
@@ -319,7 +318,6 @@ footer {
   background: #2a4bc0;
 }
 
-/* Content Area */
 .ai-content {
   display: block;
   background: #383838;
@@ -328,7 +326,7 @@ footer {
   margin-top: 10px;
 }
 
-/* Tab Buttons */
+
 .ai-tabs {
   display: flex;
   gap: 5px;
@@ -351,14 +349,29 @@ footer {
   color: white;
 }
 
-/* Tab Content */
+
 .ai-tab-content {
   min-height: 300px;
 }
 
-/* Ensure components are visible */
+
 app-ai-image-generator,
 app-ai-animation-generator {
   display: block;
   width: 100%;
+}
+
+.pixel-canvas {
+  width: 320px;
+  height: 320px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  border: 1px solid black;
+}
+
+.generated-animation {
+  width: 100%;
+  max-width: 200px;
+  border: 2px solid red; /* Debug border */
+  background-color: #f0f0f0; /* Debug background */
 }

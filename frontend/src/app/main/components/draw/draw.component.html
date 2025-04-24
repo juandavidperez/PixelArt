@@ -27,7 +27,7 @@
 
   <article>
     <div class="draw-square">
-      <canvas #canvas [attr.width]="canvasWidth" [attr.height]="canvasHeight" style="border: 1px solid black;"></canvas>
+      <canvas #canvas [width]="canvasWidth" [height]="canvasHeight" class="pixel-canvas"></canvas>
     </div>
   </article>
 
@@ -39,20 +39,22 @@
       <button (click)="toggleAITools()" class="ai-toggle-button">
         {{ showAITools ? 'Ocultar IA' : 'Mostrar IA' }}
       </button>
-  
+    
+      <!-- Use [hidden] for the main container -->
       <div *ngIf="showAITools" class="ai-content">
         <div class="ai-tabs">
-          <button (click)="activeAITab = 'image'" 
+          <button (click)="setActiveTab('image')"
                   [class.active]="activeAITab === 'image'">
             Generar Imagen
           </button>
-          <button (click)="activeAITab = 'animation'" 
+          <button (click)="setActiveTab('animation')"
                   [class.active]="activeAITab === 'animation'">
             Generar Animación
           </button>
         </div>
-  
+    
         <div class="ai-tab-content">
+          <!-- Use [hidden] for the individual components -->
           <app-ai-image-generator *ngIf="activeAITab === 'image'"></app-ai-image-generator>
           <app-ai-animation-generator *ngIf="activeAITab === 'animation'"></app-ai-animation-generator>
         </div>

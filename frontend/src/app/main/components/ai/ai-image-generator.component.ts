@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AiImageService } from '../../../shared/services/ai/ai-image.service'; 
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { ChangeDetectorRef } from '@angular/core';
+
 @Component({
   standalone: true,
   selector: 'app-ai-image-generator',
@@ -20,13 +23,11 @@ export class AiImageGeneratorComponent {
   loading = false;
   generatedImageUrl: string | null = null;
   errorMessage: string | null = null;
-  showPrompt = false;
+  
 
   constructor(private aiImageService: AiImageService , private cdr: ChangeDetectorRef) {}
 
-  togglePrompt() {
-    this.showPrompt = !this.showPrompt;
-  }
+  
 
   generateImage() {
   this.loading = true;

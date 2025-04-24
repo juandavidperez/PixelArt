@@ -33,15 +33,15 @@
       </div>
       <div class="animation-options">
         <label>Text Guidance:
-          <input formControlName="text_guidance_scale" type="number" step="0.1" min="1" max="20" />
+          <input formControlName="text_guidance_scale" type="number" step="1" min="1" max="20" />
         </label>
         <label>Image Guidance:
-          <input formControlName="image_guidance_scale" type="number" step="0.1" min="0.1" max="5" />
+          <input formControlName="image_guidance_scale" type="number" step="0.1" min="1" max="20" />
         </label>
       </div>
       <div class="animation-options">
         <label>Init Strength:
-          <input formControlName="init_image_strength" type="number" min="0" max="1000" />
+          <input formControlName="init_image_strength" type="number" min="1" max="999" />
         </label>
       </div>
       <div class="animation-options">
@@ -59,6 +59,8 @@
   <div *ngIf="error" class="error">{{ error }}</div>
   <div *ngIf="resultUrl" class="result-panel animation-container">
     <h4>Animación Generada:</h4>
-    <img [src]="resultUrl" class="generated-animation" alt="Animación generada" />
+    <a [href]="resultUrl" target="_blank" title="Abrir animación en nueva pestaña">
+      <img [src]="resultUrl" class="generated-animation" alt="Animación generada" />
+    </a>
   </div>
 </div>

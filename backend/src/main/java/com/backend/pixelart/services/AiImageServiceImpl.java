@@ -161,7 +161,7 @@ public class AiImageServiceImpl implements AiImageService {
                     AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
                     gifEncoder.start(outputStream);
                     gifEncoder.setRepeat(0); // loop forever
-                    gifEncoder.setDelay(100); // frame delay in ms
+                    gifEncoder.setDelay(200); // frame delay in ms
 
                     for (PixelLabAnimationResponse.Base64Image frame : frames) {
                         byte[] decodedBytes = Base64.getDecoder().decode(frame.base64);
