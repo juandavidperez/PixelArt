@@ -69,7 +69,7 @@ export class AiAnimationGeneratorComponent {
   resultUrl: SafeUrl | null = null; 
   private rawResultUrl: string | null = null;
   showAdvancedOptions = false;
-  private useMockData = false;
+  private useMockData = true;
   constructor(private fb: FormBuilder, private http: HttpClient,
     private cdr: ChangeDetectorRef, // Inject ChangeDetectorRef
     private ngZone: NgZone,
