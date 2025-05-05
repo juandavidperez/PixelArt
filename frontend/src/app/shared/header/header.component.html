@@ -35,6 +35,57 @@
 <p-sidebar [(visible)]="sidebarVisible" [baseZIndex]="10000">
   <div class="sidebar-content">
 
+    
+    <p-card   
+      [style]="{ overflow: 'hidden', cursor: 'pointer' }"
+      styleClass="text-center hover-card"
+      *ngIf="!isToken" 
+      [routerLink]="['/login']"
+    >
+
+      <ng-template pTemplate="header">
+        <p-avatar
+          image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+          class="mb-2 mt-5"
+          [style]="{ width: '40%', height: '40%' }"
+        />
+      </ng-template>
+    
+      <ng-template pTemplate="title">
+        <div class="text-center">
+          Inicia sesión / Crea una cuenta
+        </div>
+      </ng-template>
+    
+      <ng-template pTemplate="subtitle">
+        <div class="text-center">
+          Ingresa a nuestra comunidad y comparte con miles de usuarios
+        </div>
+      </ng-template>
+
+    </p-card>
+    
+    <p-card   
+      [style]="{ overflow: 'hidden', cursor: 'pointer' }"
+      styleClass="text-center hover-card"
+      *ngIf="isToken" 
+      (click)="cerrarSesion()"
+    >
+      
+      <ng-template pTemplate="header" >
+        <p-avatar (click)="cerrarSesion()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mb-2" [style]="{ width: '40%', height: '40%' }" />
+      </ng-template>
+    
+      <ng-template pTemplate="title">
+        <div class="text-center">
+          Bienvenido
+        </div>
+      </ng-template>
+
+    </p-card>
+
+    <p-tree [value]="files" styleClass="w-full md:w-[30rem]" />
+
     <p-button label="Pixelyze" icon="pi pi-home" text plain class="w-full" [routerLink]="['/main']"></p-button>
 
     <ng-container>
@@ -45,13 +96,6 @@
       <p-button label="Galería" icon="pi pi-images" text plain class="w-full" [routerLink]="['/main/gallery']"></p-button>
     </ng-container>
 
-    <ng-container *ngIf="!isToken">
-      <p-button label="Iniciar sesión" icon="pi pi-user" severity="info" size="small" class="w-full" [routerLink]="['/login']"></p-button>
-    </ng-container>
-
-    <ng-container *ngIf="isToken">
-      <p-avatar (click)="cerrarSesion()" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mb-2" [style]="{ width: '32px', height: '32px' }" />
-    </ng-container>
   </div>
 </p-sidebar>
 

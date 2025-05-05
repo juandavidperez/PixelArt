@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import p5 from 'p5';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
 import { SplitterModule } from 'primeng/splitter';
 import { ColorPickerModule } from 'primeng/colorpicker';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
@@ -18,6 +18,11 @@ import { ToastModule } from 'primeng/toast';
 import { StepperModule } from 'primeng/stepper';
 import { Carousel, CarouselModule } from 'primeng/carousel';
 import { SliderModule } from 'primeng/slider';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { TokenUserService } from 'src/app/shared/services/tokenUser/token-user.service';
+import { PixelArtService } from 'src/app/shared/services/pixelArt/pixel-art.service';
+import { UsersService } from 'src/app/shared/services/users/users.service';
+import { DialogModule } from 'primeng/dialog';
 
 
 export interface Pixel {
@@ -69,10 +74,11 @@ export interface AnimationProject {
     InputNumberModule,
     ToastModule,
     CarouselModule,
-    SliderModule
-    
+    SliderModule,
+    ConfirmDialog,
+    DialogModule
   ],
-  providers:[MessageService],
+  providers:[ConfirmationService , MessageService , TokenUserService , PixelArtService , UsersService],
   templateUrl: './draw-test.component.html',
   styleUrl: './draw-test.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -82,13 +88,27 @@ export class DrawTestComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    protected token: TokenUserService,
+    private router: Router ,
+    private pixelArtService: PixelArtService,
+    protected usersService: UsersService,
+    private cd: ChangeDetectorRef
   ) {
     this.formGroup = this.fb.group({
       color: ['#000000']
     });
+
+    this.formPostArt = this.fb.group({
+      image: [null, Validators.required],
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+    });
+    
   }
 
+  displayModal: boolean = false;
   formGroup: FormGroup;
   @ViewChild('carousel')  carousel: Carousel | any ;
   currentCarouselPage = 0;
@@ -96,6 +116,8 @@ export class DrawTestComponent implements OnInit {
   currentColor: string = '#000000';
   showGrid: boolean = true;
   isEraser: boolean = false;
+  formPostArt: FormGroup;
+  user: any = [];
 
   private userPixels: { x: number, y: number, color: string }[] = [];
   currentTool: 'pencil' | 'bucket' = 'pencil';
@@ -119,6 +141,46 @@ export class DrawTestComponent implements OnInit {
     }
   };
 
+  confirmSave() {
+    this.confirmationService.confirm({
+      message: '¿Estás seguro que quieres publicar este dibujo?',
+      header: 'Confirmar publicación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.saveDrawing();
+      }
+    });
+  }
+  
+  confirm1(event: Event) {
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Are you sure that you want to proceed?',
+        header: 'Confirmation',
+        closable: true,
+        closeOnEscape: true,
+        icon: 'pi pi-exclamation-triangle',
+        rejectButtonProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true,
+        },
+        acceptButtonProps: {
+            label: 'Save',
+        },
+        accept: () => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
+        },
+        reject: () => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Rejected',
+                detail: 'You have rejected',
+                life: 3000,
+            });
+        },
+    });
+  }
   
   canvasSizes = [
     { name: 'Pequeño (16x16)', width: 16, height: 16 },
@@ -880,5 +942,59 @@ responsiveOptions: any[] = [
     this.syncCurrentFrameToView();
     this.redrawCanvas();
   }
+
+
+  //PUBLICAR DIBUJO
+
+  saveDrawing(): void {
+    const dataName = localStorage.getItem('userId');
+  
+    if (!dataName) {
+      console.error('ID de usuario no encontrado.');
+      return;
+    }
+  
+    this.usersService.getUserByUsername(dataName).subscribe(
+      (data) => {
+        this.user = data;
+        const idData = this.user.id;
+  
+        const canvasElement = document.querySelector('#p5-canvas canvas') as HTMLCanvasElement;
+  
+        if (!canvasElement) {
+          console.error('No se encontró el canvas de P5.');
+          return;
+        }
+  
+        canvasElement.toBlob((blob) => {
+          if (!blob) {
+            console.error('No se pudo convertir el canvas en imagen.');
+            return;
+          }
+  
+          const formData = new FormData();
+          formData.append('image', blob, 'drawing.png'); // Nombre del archivo que se enviará
+          formData.append('title', this.formPostArt.value.title);
+          formData.append('description', this.formPostArt.value.description);
+          formData.append('userId', idData);
+  
+          this.pixelArtService.saveArt(formData).subscribe({
+            next: () => {
+              console.log('Arte publicado con éxito');
+              this.router.navigate(['/main']);
+            },
+            error: (err) => console.error('Error al publicar:', err),
+          });
+        }, 'image/png'); // Exportamos como PNG
+      },
+      error => {
+        console.error("Error al cargar datos del usuario:", error);
+      }
+    );
+  
+    this.displayModal = false;
+    this.messageService.add({severity:'success', summary:'Publicado', detail:'¡Tu dibujo ha sido publicado!'});
+  }
+  
 
 }

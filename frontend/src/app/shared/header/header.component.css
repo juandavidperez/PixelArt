@@ -3,3 +3,11 @@
   color: rgb(144, 0, 180) !important;
 }
 
+::ng-deep .hover-card {
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+::ng-deep .hover-card:hover {
+  background-color: #f0f4f8; /* color de fondo al pasar el mouse */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* un poco de sombra */
+}

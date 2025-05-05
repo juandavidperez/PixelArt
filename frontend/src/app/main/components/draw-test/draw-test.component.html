@@ -16,7 +16,43 @@
 </ng-template>
 <ng-template #end>
 
-  <p-button icon="pi pi-upload" label="¡ Publica tu dibujo !" text severity="secondary" />
+  <p-toast></p-toast>
+  <p-confirmdialog></p-confirmdialog>
+  
+  <!-- Botón para abrir el modal -->
+  <p-button 
+    icon="pi pi-upload" 
+    label="¡ Publica tu dibujo !" 
+    text 
+    severity="secondary" 
+    (click)="displayModal = true">
+  </p-button>
+  
+  <!-- Modal de formulario -->
+  <p-dialog 
+    header="Publicar Dibujo" 
+    [(visible)]="displayModal" 
+    [modal]="true" 
+    [closable]="false" 
+    [style]="{width: '400px'}">
+    
+    <form>
+      <!-- Aquí irían tus campos de formulario si quieres agregar algo -->
+      <div class="flex justify-end gap-2 mt-4">
+        <p-button 
+          label="Cancelar" 
+          severity="secondary" 
+          (click)="displayModal = false">
+        </p-button>
+        
+        <p-button 
+          label="Guardar" 
+          (click)="confirmSave()">
+        </p-button>
+      </div>
+    </form>
+  
+  </p-dialog>
 
 </ng-template>
 </p-toolbar>

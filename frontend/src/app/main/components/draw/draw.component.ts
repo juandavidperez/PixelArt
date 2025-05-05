@@ -14,8 +14,6 @@ import {Router, RouterLink} from "@angular/router";
 import {PixelArtService} from "../../../shared/services/pixelArt/pixel-art.service";
 import {UsersService} from "../../../shared/services/users/users.service";
 
-
-
 @Component({
   selector: 'app-draw',
   templateUrl: './draw.component.html',
@@ -220,7 +218,6 @@ openPostModal(): void {
 
 postArt(): void {
   const dataName = localStorage.getItem('userId');
-  console.log('ID del usuario:', dataName);
 
   if (!dataName) {
     console.error('ID de usuario no encontrado.');
