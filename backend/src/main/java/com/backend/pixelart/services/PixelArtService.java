@@ -1,9 +1,13 @@
 package com.backend.pixelart.services;
 
 import com.backend.pixelart.dto.PixelArtGetDto;
+import com.backend.pixelart.models.CategoryModel;
 import com.backend.pixelart.models.PixelArtModel;
+import com.backend.pixelart.models.TagModel;
 import com.backend.pixelart.models.UserModel;
+import com.backend.pixelart.repositories.CategoryRepository;
 import com.backend.pixelart.repositories.IPixelArtRepository;
+import com.backend.pixelart.repositories.TagRepository;
 import com.backend.pixelart.request.PixelArtRequest;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +21,15 @@ public class PixelArtService {
 
     private final Map<Long, List<PixelArtModel>> pixelArtMap = new HashMap<>();
     private final IPixelArtRepository iPixelArtRepository;
+    private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
+
 
     @Autowired
-    public PixelArtService(IPixelArtRepository iPixelArtRepository) {
+    public PixelArtService(IPixelArtRepository iPixelArtRepository, CategoryRepository categoryRepository, TagRepository tagRepository) {
         this.iPixelArtRepository = iPixelArtRepository;
+        this.categoryRepository = categoryRepository;
+        this.tagRepository = tagRepository;
     }
 
     public List<PixelArtGetDto> getAllPixelArts() {
@@ -38,12 +47,33 @@ public class PixelArtService {
         }).collect(Collectors.toList());
     }
 
-    public void savePixelArt(byte[] image, String title, String description, UserModel userModel) {
+    public void savePixelArt(byte[] image,
+                             String title,
+                             String description,
+                             Long categoryId,
+                             List<String> tagNames,
+                             UserModel userModel) {
             PixelArtModel pixelArt = new PixelArtModel();
             pixelArt.setImage(image);
             pixelArt.setTitle(title);
             pixelArt.setDescription(description);
             pixelArt.setUserModel(userModel);
+
+            CategoryModel category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            pixelArt.setCategory(category);
+
+            List<TagModel> tags = new ArrayList<>();
+            for (String tagName : tagNames) {
+                TagModel tag = tagRepository.findByName(tagName)
+                        .orElseGet(() -> {
+                            TagModel newTag = new TagModel();
+                            newTag.setName(tagName);
+                            return tagRepository.save(newTag);
+                        });
+                tags.add(tag);
+            }
+            pixelArt.setTags(tags);
 
             pixelArtMap.computeIfAbsent(userModel.getId(), k -> new ArrayList<>()).add(pixelArt);
 

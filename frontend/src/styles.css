@@ -1,9 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 @import "primeflex/primeflex.css";
 @import "primeicons/primeicons.css";
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body{
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.press-start-2p-regular{
+  padding-left: 15px;
+  font-family: "Press Start 2P", system-ui;
+  font-weight:200;
+  font-style: normal;
+}
+
+
 

@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "Pixel_Art_Draws")
@@ -34,5 +37,11 @@ public class PixelArtModel {
     @JoinColumn(name = "id_user")
     @JsonBackReference
     private UserModel userModel;
+
+    @ManyToOne
+    private CategoryModel category;
+
+    @ManyToMany
+    private List<TagModel> tags = new ArrayList<>();
 
 }

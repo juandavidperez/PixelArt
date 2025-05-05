@@ -8,6 +8,9 @@ import {ToolbarModule} from "primeng/toolbar";
 import {SidebarModule} from "primeng/sidebar";
 import {Button} from "primeng/button";
 import {Avatar} from "primeng/avatar"; 
+import { CardModule } from 'primeng/card';
+import { TreeModule } from 'primeng/tree';
+import { TreeNode } from 'primeng/api';
 
 @Component({
     selector: 'app-header',
@@ -19,7 +22,9 @@ import {Avatar} from "primeng/avatar";
     CommonModule,
     SidebarModule,
     ToggleThemeComponent,
+    CardModule,
     ToolbarModule,
+    TreeModule,
     Button,
     Avatar
 ]
@@ -30,12 +35,59 @@ export class HeaderComponent implements OnInit{
   userName: string | null = null;
   sidebarVisible = false;
   isMobile = false;
+  width: any;
 
+  files: TreeNode[] = [];
+  
   constructor(private tokenUserService: TokenUserService, private router: Router) {}
 
   ngOnInit() {
     this.isToken = this.tokenUserService.isAuthenticated();
     this.userName = this.tokenUserService.getUserName();
+
+    this.files = [
+      {
+        label: 'Documentos',
+        data: 'Document Folder',
+        expandedIcon: 'pi pi-folder-open',
+        collapsedIcon: 'pi pi-folder',
+        children: [
+          {
+            label: 'CV.pdf',
+            data: 'Curriculum Vitae',
+            icon: 'pi pi-file-pdf',
+            leaf: true
+          },
+          {
+            label: 'Carta.docx',
+            data: 'Carta de Presentación',
+            icon: 'pi pi-file-word',
+            leaf: true
+          }
+        ]
+      },
+      {
+        label: 'Imágenes',
+        data: 'Images Folder',
+        expandedIcon: 'pi pi-folder-open',
+        collapsedIcon: 'pi pi-folder',
+        children: [
+          {
+            label: 'playa.png',
+            data: 'Foto de playa',
+            icon: 'pi pi-image',
+            leaf: true
+          },
+          {
+            label: 'montaña.jpg',
+            data: 'Foto de montaña',
+            icon: 'pi pi-image',
+            leaf: true
+          }
+        ]
+      }
+    ];
+
   }
 
   onSearch() {

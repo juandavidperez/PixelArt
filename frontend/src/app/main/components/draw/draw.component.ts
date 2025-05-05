@@ -32,7 +32,7 @@ import { NgSwitch, NgSwitchCase } from '@angular/common';
 
 ],
     providers: [PixelArtService, UsersService],
-    
+
 })
 
 export class DrawComponent implements OnInit{
@@ -40,7 +40,7 @@ export class DrawComponent implements OnInit{
   showAITools = false;
   activeAITab: 'image' | 'animation' = 'image';
 
-  
+
   toggleAITools() {
     console.log('--- toggleAITools called ---'); // <-- ADD THIS
     this.showAITools = !this.showAITools;
@@ -49,7 +49,7 @@ export class DrawComponent implements OnInit{
     this.cd.detectChanges();
   }
 
-  
+
   setActiveTab(tab: 'image' | 'animation') {
     console.log('--- setActiveTab called with:', tab); // <-- ADD THIS
     this.activeAITab = tab;
@@ -101,7 +101,7 @@ export class DrawComponent implements OnInit{
   formPostArt: FormGroup;
   pixelSize: FormGroup;
   user: any = [];
-  displayWidth: number = 540; 
+  displayWidth: number = 540;
   displayHeight: number = 540;
   scaleFactor: number = 5;
 
@@ -111,8 +111,8 @@ export class DrawComponent implements OnInit{
     this.setupCanvas();
     this.isAuthenticated = this.token.isAuthenticated();
     this.applyCanvasScaling();
-    
-    
+
+
   }
 
   triggerChangeDetection() {
@@ -152,8 +152,8 @@ export class DrawComponent implements OnInit{
   }
 
   initializePixelData(width: number, height: number) {
-    const rows = Math.ceil(height / this.brushSize); 
-    const cols = Math.ceil(width / this.brushSize); 
+    const rows = Math.ceil(height / this.brushSize);
+    const cols = Math.ceil(width / this.brushSize);
     this.pixelData = Array.from({ length: rows }, () => Array(cols).fill('transparent'));
   }
 
@@ -170,11 +170,11 @@ export class DrawComponent implements OnInit{
     if (!this.isDrawing) return;
 
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    
-    
+
+
     const scaleX = this.canvasWidth / rect.width;
     const scaleY = this.canvasHeight / rect.height;
-    
+
     const x = Math.floor((event.clientX - rect.left) * scaleX / this.brushSize) * this.brushSize;
     const y = Math.floor((event.clientY - rect.top) * scaleY / this.brushSize) * this.brushSize;
 
@@ -228,11 +228,11 @@ export class DrawComponent implements OnInit{
 
   fillWithBucket(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-  
-    
+
+
     const scaleX = this.canvasWidth / rect.width;
     const scaleY = this.canvasHeight / rect.height;
-    
+
     const x = Math.floor((event.clientX - rect.left) * scaleX / this.brushSize) * this.brushSize;
     const y = Math.floor((event.clientY - rect.top) * scaleY / this.brushSize) * this.brushSize;
 

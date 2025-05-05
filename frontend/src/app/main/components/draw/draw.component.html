@@ -34,12 +34,12 @@
   <aside class="right">
     <label for="colorPicker">Elige un color:</label>
     <input type="color" id="colorPicker" [(ngModel)]="selectedColor" />
-    
+
     <div class="ai-controls">
       <button (click)="toggleAITools()" class="ai-toggle-button">
         {{ showAITools ? 'Ocultar IA' : 'Mostrar IA' }}
       </button>
-    
+
       <!-- Use [hidden] for the main container -->
       <div *ngIf="showAITools" class="ai-content">
         <div class="ai-tabs">
@@ -52,7 +52,7 @@
             Generar Animación
           </button>
         </div>
-    
+
         <div class="ai-tab-content">
           <!-- Use [hidden] for the individual components -->
           <app-ai-image-generator *ngIf="activeAITab === 'image'"></app-ai-image-generator>
