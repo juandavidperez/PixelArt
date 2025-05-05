@@ -34,13 +34,15 @@ public class PixelArtController {
             @RequestParam("image") MultipartFile imageFile,
             @RequestParam("title") String title,
             @RequestParam("description") String description,
+            @RequestParam("category_id") Long categoryId,
+            @RequestParam("tag") List<String> tagNames,
             @RequestParam("userId") Long userId
     ) {
         try {
             byte[] imageBytes = imageFile.getBytes();
             UserModel userModel = new UserModel();
             userModel.setId(userId);
-            pixelArtService.savePixelArt(imageBytes, title, description, userModel);
+            pixelArtService.savePixelArt(imageBytes, title, description, categoryId , tagNames , userModel);
             return ResponseEntity.ok("Pixel Art guardado con éxito");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
