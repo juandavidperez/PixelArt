@@ -1,6 +1,8 @@
-
-*{
-  overflow-y: hidden !important;
+body{
+  margin: 0;
+  padding: 0;
+  height: auto;
+  overflow-x: hidden;
 }
 
 div{
@@ -9,15 +11,29 @@ div{
 }
 
 .draw-square{
-  width: 100%
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: height 0.3s ease-in-out;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 canvas {
   background-image: url("../../../../assets/img/fondoEjemplo.jpg");
   background-repeat: repeat;
-  background-size: 420px;
+  background-size: 400px;
   cursor: crosshair;
-
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 100px); 
+  width: auto;
+  height: auto;
+  transform: scale(1.5); 
+  border: 1px solid black;
+  object-fit: contain;
 }
 
 
@@ -32,11 +48,30 @@ nav a{
   margin:  0px 2cm 0px 0px;
 }
 
+
 main{
   display: flex;
-  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 60px); 
+  overflow: hidden;
+  justify-content: space-between;
   background-color: #111111;
+  padding: 10px;
+  
+  
 }
+
+aside.right {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  gap: 1rem;          
+  background-color: #1e1e1e;
+  padding: 10px;
+  box-sizing: border-box;
+  
+}
+
 
 main aside{
   overflow: hidden ;
@@ -45,6 +80,8 @@ main aside{
   color: #FFFFFF;
   padding: 10px;
   background-color: #1e1e1e;
+  
+  
 }
 
 #colorPicker{
@@ -59,20 +96,21 @@ main aside{
 
 }
 
-aside button{
+aside button {
+  margin: 5px;
+  padding: 5px;
   background-color: transparent;
   border: none;
+  cursor: pointer;
 }
 
-aside button:hover{
-  background-color:rgb(37, 37, 37);
-  border: none;
+aside button:hover {
+  background-color: rgb(37, 37, 37);
 }
 
-button img{
-
-  width: 80px;
-  height: 80px;
+aside button img {
+  width: 50px; /* Reducir el tamaño de las imágenes */
+  height: 50px;
 }
 
 #colorPicker::-webkit-color-swatch {
@@ -229,17 +267,111 @@ input[type="checkbox"] {
 }
 
 main article{
-  display: block;
-  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  margin-top: 20px;
+  
 }
 
 aside button {
   margin: 5px;
 }
 
-footer{
+footer {
   background-color: #1e1e1e;
   text-align: center;
   color: #FFFFFF;
+  margin: 0;
+  padding: 10px 0;
+  
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  
 }
 
+.ai-controls {
+  background: #2d2d2d;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+
+.ai-toggle-button {
+  background: #3f60f7;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+
+.ai-toggle-button:hover {
+  background: #2a4bc0;
+}
+
+.ai-content {
+  display: block;
+  background: #383838;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+
+.ai-tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.ai-tabs button {
+  flex: 1;
+  padding: 6px 0;
+  background: #3a3a3a;
+  color: #ddd;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.ai-tabs button.active {
+  background: #3f60f7;
+  color: white;
+}
+
+
+.ai-tab-content {
+  min-height: 300px;
+}
+
+
+app-ai-image-generator,
+app-ai-animation-generator {
+  display: block;
+  width: 100%;
+}
+
+.pixel-canvas {
+  width: 320px;
+  height: 320px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  border: 1px solid black;
+}
+
+.generated-animation {
+  width: 100%;
+  max-width: 200px;
+  border: 2px solid red; /* Debug border */
+  background-color: #f0f0f0; /* Debug background */
+}

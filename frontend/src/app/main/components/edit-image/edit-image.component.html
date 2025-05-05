@@ -1,0 +1,38 @@
+<div class="ai-container">
+  <button [ngClass]="{ 'active': isMenuOpen }" (click)="toggleMenu()">
+    {{ isMenuOpen ? 'Ocultar Editor' : 'Editar Imagen' }}
+  </button>
+  
+  <div [ngClass]="{ 'open': isMenuOpen }" class="options-panel">
+    <h3>Editor de Imágenes</h3>
+    
+    <textarea
+      id="prompt"
+      [(ngModel)]="promptText"
+      placeholder="Describe la edición que deseas..."
+      rows="2"
+      class="small-textarea">
+    </textarea>
+    
+    <div class="file-input-container">
+      <input type="file" id="file" (change)="onFileSelected($event)" accept="image/png">
+      <label for="file" class="file-input-label">Seleccionar archivo</label>
+    </div>
+    
+    <div class="button-group">
+      <button (click)="onUpload()" [disabled]="!selectedFile || !promptText || isLoading">
+        {{ isLoading ? 'Procesando...' : 'Editar Imagen' }}
+      </button>
+    </div>
+
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    
+    <div *ngIf="imageUrl" class="image-container">
+      <h4>Imagen editada:</h4>
+      <a [href]="imageUrl" target="_blank">
+        <img [src]="imageUrl" alt="Imagen Generada" class="generated-image" (click)="abrirImagen()" />
+      </a>
+    </div>
+  </div>
+</div>

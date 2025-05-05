@@ -1,4 +1,4 @@
-import {NgIf} from '@angular/common';
+import {CommonModule, NgIf} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -10,27 +10,54 @@ import {
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import {TokenUserService} from "../../../shared/services/tokenUser/token-user.service";
-import {Router, RouterLink} from "@angular/router";
+import {Router} from "@angular/router";
 import {PixelArtService} from "../../../shared/services/pixelArt/pixel-art.service";
 import {UsersService} from "../../../shared/services/users/users.service";
-
-
+import { AiImageGeneratorComponent } from "../ai/ai-image-generator.component";
+import { EditImageComponent } from '../edit-image/edit-image.component';
+import { AiAnimationGeneratorComponent } from '../ai/ai-animation-generator/ai-animation-generator.component';
+import { NgSwitch, NgSwitchCase } from '@angular/common';
 
 @Component({
     selector: 'app-draw',
     templateUrl: './draw.component.html',
     styleUrls: ['./draw.component.css'],
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgIf,
-        RouterLink
-    ],
+      FormsModule,
+      ReactiveFormsModule,
+      NgIf,
+      AiImageGeneratorComponent,
+      EditImageComponent,
+      AiAnimationGeneratorComponent,
+
+],
     providers: [PixelArtService, UsersService],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    
 })
 
 export class DrawComponent implements OnInit{
+
+  showAITools = false;
+  activeAITab: 'image' | 'animation' = 'image';
+
+  
+  toggleAITools() {
+    console.log('--- toggleAITools called ---'); // <-- ADD THIS
+    this.showAITools = !this.showAITools;
+    console.log('showAITools is now:', this.showAITools); // <-- ADD THIS
+    // Keep markForCheck for now, or try detectChanges later
+    this.cd.detectChanges();
+  }
+
+  
+  setActiveTab(tab: 'image' | 'animation') {
+    console.log('--- setActiveTab called with:', tab); // <-- ADD THIS
+    this.activeAITab = tab;
+    // Keep markForCheck for now, or try detectChanges later
+    this.cd.detectChanges();
+  }
+
+
 
   constructor(private fb: FormBuilder,
               protected token: TokenUserService,
@@ -51,7 +78,12 @@ export class DrawComponent implements OnInit{
       title: ['', Validators.required],
       description: ['', Validators.required],
     });
+  }
 
+  navigateToMain() {
+    this.router.navigate(['/main'], { skipLocationChange: false }).then(() => {
+      window.location.reload();
+    });
   }
 
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
@@ -60,22 +92,27 @@ export class DrawComponent implements OnInit{
   selectedColor: string = '#000000';
   isDrawing: boolean = false;
   pixelData: string[][] = [];
-  canvasWidth: number = 600;
-  canvasHeight: number = 600;
-  brushSize: number = 10;
+  canvasWidth: number = 64;
+  canvasHeight: number = 64;
+  brushSize: number = 1;
   isBucketActive: boolean = false;
   isAuthenticated: boolean = false;
   previewImageUrl: string | null = null;
   formPostArt: FormGroup;
   pixelSize: FormGroup;
   user: any = [];
+  displayWidth: number = 540; 
+  displayHeight: number = 540;
+  scaleFactor: number = 5;
 
 
   ngOnInit() {
     this.openPostModal()
     this.setupCanvas();
     this.isAuthenticated = this.token.isAuthenticated();
-
+    this.applyCanvasScaling();
+    
+    
   }
 
   triggerChangeDetection() {
@@ -99,15 +136,24 @@ export class DrawComponent implements OnInit{
 
   setupCanvas() {
     this.ctx = this.canvas.nativeElement.getContext('2d')!;
+    this.applyCanvasScaling();
+    this.ctx = this.canvas.nativeElement.getContext('2d')!;
     this.canvas.nativeElement.addEventListener('mousedown', (event) => this.startDrawing(event));
     this.canvas.nativeElement.addEventListener('mousemove', (event) => this.draw(event));
     this.canvas.nativeElement.addEventListener('mouseup', () => this.stopDrawing());
     this.canvas.nativeElement.addEventListener('mouseout', () => this.stopDrawing());
   }
 
+  applyCanvasScaling() {
+    this.canvas.nativeElement.width = this.canvasWidth;
+    this.canvas.nativeElement.height = this.canvasHeight;
+    this.canvas.nativeElement.style.width = `${this.displayWidth}px`;
+    this.canvas.nativeElement.style.height = `${this.displayHeight}px`;
+  }
+
   initializePixelData(width: number, height: number) {
-    const rows = Math.floor(height / 10);
-    const cols = Math.floor(width / 10);
+    const rows = Math.ceil(height / this.brushSize); 
+    const cols = Math.ceil(width / this.brushSize); 
     this.pixelData = Array.from({ length: rows }, () => Array(cols).fill('transparent'));
   }
 
@@ -124,8 +170,13 @@ export class DrawComponent implements OnInit{
     if (!this.isDrawing) return;
 
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    const x = Math.floor((event.clientX - rect.left) / this.brushSize) * this.brushSize;
-    const y = Math.floor((event.clientY - rect.top) / this.brushSize) * this.brushSize;
+    
+    
+    const scaleX = this.canvasWidth / rect.width;
+    const scaleY = this.canvasHeight / rect.height;
+    
+    const x = Math.floor((event.clientX - rect.left) * scaleX / this.brushSize) * this.brushSize;
+    const y = Math.floor((event.clientY - rect.top) * scaleY / this.brushSize) * this.brushSize;
 
     if (this.selectedColor === 'transparent') {
       this.erase(x, y);
@@ -177,8 +228,13 @@ export class DrawComponent implements OnInit{
 
   fillWithBucket(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    const x = Math.floor((event.clientX - rect.left) / this.brushSize) * this.brushSize;
-    const y = Math.floor((event.clientY - rect.top) / this.brushSize) * this.brushSize;
+  
+    
+    const scaleX = this.canvasWidth / rect.width;
+    const scaleY = this.canvasHeight / rect.height;
+    
+    const x = Math.floor((event.clientX - rect.left) * scaleX / this.brushSize) * this.brushSize;
+    const y = Math.floor((event.clientY - rect.top) * scaleY / this.brushSize) * this.brushSize;
 
     const startColor = this.getPixelColor(x, y);
     if (startColor === this.selectedColor) return;
@@ -275,4 +331,3 @@ export class DrawComponent implements OnInit{
 
 
 }
-

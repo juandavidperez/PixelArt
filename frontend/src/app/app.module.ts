@@ -8,18 +8,26 @@ import { environment } from "../environment/environment";
 import {AngularFireModule} from "@angular/fire/compat";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import { HolaComponent } from './hola/hola.component';
+import { DrawComponent } from './main/components/draw/draw.component';
+// import { HolaComponent } from './hola/hola.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { AiImageGeneratorComponent } from './main/components/ai/ai-image-generator.component';
+import { FormsModule } from '@angular/forms';
+import { AppComponent } from './app.component';
 
 @NgModule({
   imports: [
     RouterModule,
     CommonModule,
+    BrowserModule,
+    FormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore())
   ],
   declarations: [
-    HolaComponent
+    HolaComponent,
   ],
   providers: [],
   bootstrap: []

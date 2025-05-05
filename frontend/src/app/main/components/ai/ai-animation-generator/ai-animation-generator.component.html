@@ -1,0 +1,66 @@
+<div class="ai-container">
+  <h3>Generador de Animación AI</h3>
+  <form [formGroup]="animationForm" (ngSubmit)="submit()">
+    <div class="options-panel">
+      <textarea formControlName="description" placeholder="Descripción de la animación"></textarea>
+      <input formControlName="action" type="text" placeholder="Acción (ej: caminar, saltar)" />
+      <div class="animation-options">
+        <label>Frames:
+          <input formControlName="n_frames" type="number" min="2" max="16" />
+        </label>
+      </div>
+      <div class="animation-options">
+        <label>Vista:
+          <select formControlName="view">
+            <option value="side">Lateral</option>
+            <option value="front">Frontal</option>
+            <option value="back">Trasera</option>
+          </select>
+        </label>
+        <label>Dirección:
+          <select formControlName="direction">
+            <option value="east">Este</option>
+            <option value="west">Oeste</option>
+            <option value="north">Norte</option>
+            <option value="south">Sur</option>
+          </select>
+        </label>
+      </div>
+      <div class="animation-options">
+        <label>Referencia:
+          <input type="file" accept="image/*" (change)="onFileChange($event)" />
+        </label>
+      </div>
+      <div class="animation-options">
+        <label>Text Guidance:
+          <input formControlName="text_guidance_scale" type="number" step="1" min="1" max="20" />
+        </label>
+        <label>Image Guidance:
+          <input formControlName="image_guidance_scale" type="number" step="0.1" min="1" max="20" />
+        </label>
+      </div>
+      <div class="animation-options">
+        <label>Init Strength:
+          <input formControlName="init_image_strength" type="number" min="1" max="999" />
+        </label>
+      </div>
+      <div class="animation-options">
+        <label>Negativo:
+          <input formControlName="negative_description" type="text" />
+        </label>
+      </div>
+      <div class="button-group">
+        <button type="submit" [disabled]="loading">Generar Animación</button>
+        <button type="button" (click)="clearResult()" [disabled]="loading">Limpiar</button>
+      </div>
+    </div>
+  </form>
+  <div *ngIf="loading" class="loading">Generando animación...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="resultUrl" class="result-panel animation-container">
+    <h4>Animación Generada:</h4>
+    <a [href]="resultUrl" target="_blank" title="Abrir animación en nueva pestaña">
+      <img [src]="resultUrl" class="generated-animation" alt="Animación generada" />
+    </a>
+  </div>
+</div>
