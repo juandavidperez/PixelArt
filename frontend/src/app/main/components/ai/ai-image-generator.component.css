@@ -1,0 +1,108 @@
+/* Contenedor principal */
+.ai-container {
+  max-width: 300px;
+  margin: auto;
+  background: #1e1e1e;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* Título */
+h3 {
+  color: #fff;
+  margin: 5px 0;
+  font-size: 0.9em;
+}
+
+/* Panel de opciones */
+.options-panel {
+  margin-top: 5px;
+  padding: 5px;
+  background: #282828;
+  border-radius: 5px;
+}
+
+/* Campo de texto */
+textarea {
+  width: 100%;
+  font-size: 12px;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background: #333;
+  color: white;
+  resize: none;
+  height: 35px;
+}
+
+/* Botones */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #357ab8;
+}
+
+button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+/* Mensajes de estado */
+.loading {
+  margin: 5px 0;
+  color: #bbb;
+  font-size: 12px;
+}
+
+.error {
+  color: #d32f2f;
+  margin: 5px 0;
+  font-size: 12px;
+}
+
+/* Contenedor de la imagen */
+.image-container {
+  margin-top: 8px;
+}
+
+.image-container h4 {
+  color: white;
+  margin: 5px 0;
+  font-size: 0.9em;
+}
+
+/* Imagen generada */
+.generated-image {
+  width: 100%;
+  max-width: 180px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+.generated-image:hover {
+  transform: scale(1.05);
+}
+
+/* Resultado */
+.result-panel {
+  margin-top: 10px;
+}

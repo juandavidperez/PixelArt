@@ -1,0 +1,29 @@
+<div class="ai-container">
+  
+  
+  <div  class="options-panel">
+    <h3>Generador de Imágenes AI</h3>
+    
+    <textarea
+      [(ngModel)]="promptText"
+      placeholder="Describe la imagen..."
+      rows="2"
+      class="small-textarea">
+    </textarea>
+    
+    <div class="button-group">
+      <button (click)="generateImage()" [disabled]="loading">Generar Imagen</button>
+      <button (click)="enhancePrompt()" [disabled]="loading">Mejorar Prompt</button>
+    </div>
+
+    <div *ngIf="loading" class="loading">Generando imagen...</div>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+    
+    <div *ngIf="generatedImageUrl" class="image-container">
+      <h4>Imagen Generada:</h4>
+      <a [href]="generatedImageUrl" target="_blank">
+        <img [src]="generatedImageUrl" alt="Imagen generada" class="generated-image" (click)="abrirImagen()" />
+      </a>
+    </div>
+  </div>
+</div>
