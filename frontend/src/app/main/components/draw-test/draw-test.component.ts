@@ -23,6 +23,9 @@ import { TokenUserService } from 'src/app/shared/services/tokenUser/token-user.s
 import { PixelArtService } from 'src/app/shared/services/pixelArt/pixel-art.service';
 import { UsersService } from 'src/app/shared/services/users/users.service';
 import { DialogModule } from 'primeng/dialog';
+import { CardModule } from 'primeng/card';
+import { AiImageGeneratorComponent } from "../ai/ai-image-generator.component";
+import { AiAnimationGeneratorComponent } from "../ai/ai-animation-generator/ai-animation-generator.component";
 
 
 export interface Pixel {
@@ -61,7 +64,7 @@ export interface AnimationProject {
 
 @Component({
   selector: 'app-draw-test',
-  imports: [CommonModule ,FormsModule , ReactiveFormsModule ,DragDropModule, RouterLink,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DragDropModule, RouterLink,
     ToolbarModule,
     StepperModule,
     ButtonModule,
@@ -76,8 +79,8 @@ export interface AnimationProject {
     CarouselModule,
     SliderModule,
     ConfirmDialog,
-    DialogModule
-  ],
+    CardModule,
+    DialogModule, AiImageGeneratorComponent, AiAnimationGeneratorComponent],
   providers:[ConfirmationService , MessageService , TokenUserService , PixelArtService , UsersService],
   templateUrl: './draw-test.component.html',
   styleUrl: './draw-test.component.css',
@@ -995,6 +998,29 @@ responsiveOptions: any[] = [
     this.displayModal = false;
     this.messageService.add({severity:'success', summary:'Publicado', detail:'¡Tu dibujo ha sido publicado!'});
   }
+
+  // AI CONTROLES
+
+  showAITools = false;
+  activeAITab: 'image' | 'animation' = 'image';
+
+  
+  toggleAITools() {
+    console.log('--- toggleAITools called ---'); // <-- ADD THIS
+    this.showAITools = !this.showAITools;
+    console.log('showAITools is now:', this.showAITools); // <-- ADD THIS
+    // Keep markForCheck for now, or try detectChanges later
+    this.cd.detectChanges();
+  }
+
+
+  setActiveTab(tab: 'image' | 'animation') {
+    console.log('--- setActiveTab called with:', tab); // <-- ADD THIS
+    this.activeAITab = tab;
+    // Keep markForCheck for now, or try detectChanges later
+    this.cd.detectChanges();
+  }
+
   
 
 }

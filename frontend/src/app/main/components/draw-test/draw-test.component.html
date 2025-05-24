@@ -57,7 +57,7 @@
 </ng-template>
 </p-toolbar>
 
-<p-splitter [style]="{ minHeight: '750px' , height: '100%' }" [panelSizes]="[70, 30]" [minSizes]="[20, 20]" styleClass="mb-8" layout="vertical">
+<p-splitter [style]="{ minHeight: '750px' , height: '100%' }" [panelSizes]="[30, 70]" [minSizes]="[20, 30]" styleClass="mb-8" layout="vertical">
   <ng-template #panel>
 
     <p-splitter [panelSizes]="[20, 40, 40]">
@@ -89,6 +89,33 @@
               [raised]="true" severity="danger"
               [class.active]="isEraser"
             ></p-button >
+
+            <div class="ai-controls control-group tools">
+              <p-button severity="primary" (click)="toggleAITools()" class="ai-toggle-button">
+                {{ showAITools ? 'Ocultar IA' : 'Mostrar IA' }}
+              </p-button>
+        
+              <!-- Use [hidden] for the main container -->
+              <div *ngIf="showAITools" class="ai-content">
+                <div class="ai-tabs control-group tools">
+                  <p-button severity="info" class="mr-4" (click)="setActiveTab('image')"
+                          [class.active]="activeAITab === 'image'">
+                    Generar Imagen
+                  </p-button>
+                  <p-button severity="help" (click)="setActiveTab('animation')"
+                          [class.active]="activeAITab === 'animation'">
+                    Generar Animación
+                  </p-button>
+                </div>
+        
+                <p-card class="ai-tab-content">
+                  <!-- Use [hidden] for the individual components -->
+                  <app-ai-image-generator *ngIf="activeAITab === 'image'"></app-ai-image-generator>
+                  <app-ai-animation-generator *ngIf="activeAITab === 'animation'"></app-ai-animation-generator>
+                </p-card>
+              </div>
+            </div>
+
           </div>
         </div>
       </ng-template>
@@ -191,6 +218,8 @@
                   </div>
                 </div>
               </div>
+
+             
 
           </div>
           
