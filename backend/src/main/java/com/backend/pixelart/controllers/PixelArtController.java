@@ -1,6 +1,7 @@
 package com.backend.pixelart.controllers;
 
 import com.backend.pixelart.dto.PixelArtGetDto;
+import com.backend.pixelart.models.CategoryModel;
 import com.backend.pixelart.models.PixelArtModel;
 import com.backend.pixelart.models.UserModel;
 import com.backend.pixelart.request.PixelArtRequest;
@@ -72,6 +73,11 @@ public class PixelArtController {
                     .body(new ResponseObject<>("Error al actualizar el Pixel Art", null));
 
         }
+    }
+
+    @GetMapping(path = "/getCategories")
+    public List<CategoryModel> categoryModelList() {
+        return pixelArtService.getAllCategories();
     }
 
 
