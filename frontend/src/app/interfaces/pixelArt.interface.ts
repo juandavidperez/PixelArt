@@ -3,17 +3,27 @@ export interface PixelArt {
   image:       string;
   title:       string;
   description: string;
-  userName:  String;
+  category:    string;
+  tags:        string[];
+  userName:    string;
 }
 
-export interface PixelArtCreateDto {
-  image:       string;
-  title:       string;
+export interface PixelArtForm {
+  image: File | Blob;
+  title: string;
   description: string;
-  id_user: string | null ;
+  category_id: number;
+  tags: string[];
+  userId: number;
 }
+
 
 export interface PixelArtUpdateDto {
   title:       string;
   description: string;
+}
+
+export interface Categories {
+  id:     number;
+  name:   string;
 }

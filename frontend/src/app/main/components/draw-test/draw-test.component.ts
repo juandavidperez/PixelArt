@@ -18,11 +18,13 @@ import { ToastModule } from 'primeng/toast';
 import { StepperModule } from 'primeng/stepper';
 import { Carousel, CarouselModule } from 'primeng/carousel';
 import { SliderModule } from 'primeng/slider';
-import { ConfirmDialog } from 'primeng/confirmdialog';
 import { TokenUserService } from 'src/app/shared/services/tokenUser/token-user.service';
 import { PixelArtService } from 'src/app/shared/services/pixelArt/pixel-art.service';
 import { UsersService } from 'src/app/shared/services/users/users.service';
 import { DialogModule } from 'primeng/dialog';
+import { CardModule } from 'primeng/card';
+import { AiImageGeneratorComponent } from "../ai/ai-image-generator.component";
+import { AiAnimationGeneratorComponent } from "../ai/ai-animation-generator/ai-animation-generator.component";
 
 
 export interface Pixel {
@@ -61,7 +63,7 @@ export interface AnimationProject {
 
 @Component({
   selector: 'app-draw-test',
-  imports: [CommonModule ,FormsModule , ReactiveFormsModule ,DragDropModule, RouterLink,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DragDropModule, RouterLink,
     ToolbarModule,
     StepperModule,
     ButtonModule,
@@ -75,9 +77,8 @@ export interface AnimationProject {
     ToastModule,
     CarouselModule,
     SliderModule,
-    ConfirmDialog,
-    DialogModule
-  ],
+    CardModule,
+    DialogModule, AiImageGeneratorComponent, AiAnimationGeneratorComponent],
   providers:[ConfirmationService , MessageService , TokenUserService , PixelArtService , UsersService],
   templateUrl: './draw-test.component.html',
   styleUrl: './draw-test.component.css',
@@ -92,7 +93,7 @@ export class DrawTestComponent implements OnInit {
     private confirmationService: ConfirmationService,
     protected token: TokenUserService,
     private router: Router ,
-    private pixelArtService: PixelArtService,
+    protected pixelArtService: PixelArtService,
     protected usersService: UsersService,
     private cd: ChangeDetectorRef
   ) {
@@ -104,6 +105,9 @@ export class DrawTestComponent implements OnInit {
       image: [null, Validators.required],
       title: ['', Validators.required],
       description: ['', Validators.required],
+      category_id: [null, Validators.required],
+      tags: [null, Validators.required],
+      userId: [null, Validators.required]
     });
     
   }
@@ -128,6 +132,9 @@ export class DrawTestComponent implements OnInit {
   layers: Layer[] = [];
   activeLayerIndex: number = 0;
   newLayerName: string = '';
+  categories: any[] = [];
+  exportingImage = false; 
+
   
   animation: AnimationProject = {
     frames: [],
@@ -140,6 +147,10 @@ export class DrawTestComponent implements OnInit {
       framesToShow: 1
     }
   };
+
+  showDialog() {
+    this.displayModal = true;
+  }
 
   confirmSave() {
     this.confirmationService.confirm({
@@ -265,6 +276,8 @@ responsiveOptions: any[] = [
   ngOnInit() {
     this.initializeEmptyFrame();
     this.initPixelArt(this.selectedCanvasSize.width, this.selectedCanvasSize.height);
+    this.pixelArtService.loadCategories();
+    this.cd.detectChanges();
   }
 
   //METODO PRINCIPAL PARA MANEJAR EL DIBUJO
@@ -336,31 +349,41 @@ responsiveOptions: any[] = [
       p.setup = () => {
         const maxDimension = Math.max(gridWidth, gridHeight);
         this.pixelSize = this.canvasWidth / maxDimension;
-        
+      
         const canvas = p.createCanvas(this.canvasWidth, this.canvasHeight);
         canvas.parent('p5-canvas');
+      
         p.pixelDensity(1);
         p.noStroke();
         p.drawingContext.imageSmoothingEnabled = false;
+      
+        p.clear(); // <-- fondo transparente
       };
+      
 
       p.draw = () => {
-        
-        this.redrawCanvas();
-
+        if (!this.exportingImage) {
+          this.drawGrid(p); // Solo mostramos la cuadrícula mientras editamos
+        } else {
+          p.clear(); // Limpiamos completamente el fondo sin color
+        }
+      
+        this.redrawCanvas(); // Dibuja los píxeles del usuario
+      
         if (this.isCursorOnCanvas(p)) {
           this.drawPixelHighlight(p);
         }
-
+      
         if (p.mouseIsPressed) {
           const x = p.mouseX;
           const y = p.mouseY;
-          
+      
           if (this.currentTool === 'bucket') {
             this.floodFill(x, y, this.isEraser ? 'transparent' : this.currentColor);
           } else {
             this.handleDrawing(x, y);
           }
+      
           this.redrawCanvas();
         }
       };
@@ -522,20 +545,18 @@ responsiveOptions: any[] = [
   }
 
 
-  private drawGrid(p: any): void {
-    const color1 = 220;
-    const color2 = 255;
-    
-    p.background(color2);
-    
-    p.fill(color1);
-    for (let x = 0; x < p.width; x += this.pixelSize * 2) {
-      for (let y = 0; y < p.height; y += this.pixelSize * 2) {
-        p.rect(x, y, this.pixelSize, this.pixelSize);
-        p.rect(x + this.pixelSize, y + this.pixelSize, this.pixelSize, this.pixelSize);
-      }
+ private drawGrid(p: any): void {
+  const color1 = 220;
+  p.noStroke();
+  p.fill(color1,255); // Transparente
+
+  for (let x = 0; x < p.width; x += this.pixelSize * 2) {
+    for (let y = 0; y < p.height; y += this.pixelSize * 2) {
+      p.rect(x, y, this.pixelSize, this.pixelSize);
+      p.rect(x + this.pixelSize, y + this.pixelSize, this.pixelSize, this.pixelSize);
     }
   }
+}
 
   handleOpacityChange(event: Event, layerIndex: number): void {
     const target = event.target as HTMLInputElement | null;
@@ -947,54 +968,85 @@ responsiveOptions: any[] = [
   //PUBLICAR DIBUJO
 
   saveDrawing(): void {
-    const dataName = localStorage.getItem('userId');
-  
-    if (!dataName) {
-      console.error('ID de usuario no encontrado.');
+    const username = localStorage.getItem('userId');
+    if (!username) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Usuario no autenticado' });
       return;
     }
   
-    this.usersService.getUserByUsername(dataName).subscribe(
-      (data) => {
+    this.usersService.getUserByUsername(username).subscribe({
+      next: (data) => {
         this.user = data;
-        const idData = this.user.id;
-  
+        const userId = this.user.id;
         const canvasElement = document.querySelector('#p5-canvas canvas') as HTMLCanvasElement;
   
         if (!canvasElement) {
-          console.error('No se encontró el canvas de P5.');
+          console.error('Canvas no encontrado');
           return;
         }
   
         canvasElement.toBlob((blob) => {
           if (!blob) {
-            console.error('No se pudo convertir el canvas en imagen.');
+            console.error('No se pudo crear la imagen');
             return;
           }
   
+          const tags = this.formPostArt.value.tags
+            ? this.formPostArt.value.tags.split(',').map((tag: string) => tag.trim())
+            : [];
+  
           const formData = new FormData();
-          formData.append('image', blob, 'drawing.png'); // Nombre del archivo que se enviará
+          formData.append('image', blob, 'drawing.png');
           formData.append('title', this.formPostArt.value.title);
           formData.append('description', this.formPostArt.value.description);
-          formData.append('userId', idData);
+          formData.append('category_id', this.formPostArt.value.category_id);
+          formData.append('tag', JSON.stringify(tags)); // o repetir múltiples formData.append('tag', t)
+          formData.append('userId', userId);
   
           this.pixelArtService.saveArt(formData).subscribe({
             next: () => {
-              console.log('Arte publicado con éxito');
+              this.messageService.add({ severity: 'success', summary: 'Publicado', detail: '¡Tu dibujo ha sido publicado!' });
+              this.displayModal = false;
               this.router.navigate(['/main']);
             },
-            error: (err) => console.error('Error al publicar:', err),
+            error: (err) => {
+              console.error('Error al publicar:', err);
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo publicar el dibujo' });
+            }
           });
-        }, 'image/png'); // Exportamos como PNG
-      },
-      error => {
-        console.error("Error al cargar datos del usuario:", error);
-      }
-    );
   
-    this.displayModal = false;
-    this.messageService.add({severity:'success', summary:'Publicado', detail:'¡Tu dibujo ha sido publicado!'});
+        }, 'image/png');
+
+        console.log(this.formPostArt.value); // o como se llame tu formulario
+      },
+      error: (err) => {
+        console.error('Error obteniendo usuario:', err);
+      }
+    });
   }
+  
+  // AI CONTROLES
+
+  showAITools = false;
+  activeAITab: 'image' | 'animation' = 'image';
+
+  
+  toggleAITools() {
+    console.log('--- toggleAITools called ---'); // <-- ADD THIS
+    this.showAITools = !this.showAITools;
+    console.log('showAITools is now:', this.showAITools); // <-- ADD THIS
+    // Keep markForCheck for now, or try detectChanges later
+    this.cd.detectChanges();
+  }
+
+
+  setActiveTab(tab: 'image' | 'animation') {
+    console.log('--- setActiveTab called with:', tab); // <-- ADD THIS
+    this.activeAITab = tab;
+    // Keep markForCheck for now, or try detectChanges later
+    this.cd.detectChanges();
+  }
+
   
 
 }

@@ -41,10 +41,34 @@ public class PixelArtService {
             dto.setImage(pixelArt.getImage());
             dto.setTitle(pixelArt.getTitle());
             dto.setDescription(pixelArt.getDescription());
-            dto.setUserName(pixelArt.getUserModel() != null ? pixelArt.getUserModel().getUsername() : null);
+
+            if (pixelArt.getCategory() != null) {
+                dto.setCategory(pixelArt.getCategory().getName());
+            } else {
+                dto.setCategory(null);
+            }
+
+            if (pixelArt.getTags() != null) {
+                List<String> tagNames = pixelArt.getTags().stream()
+                        .map(TagModel::getName)
+                        .collect(Collectors.toList());
+                dto.setTags(tagNames);
+            } else {
+                dto.setTags(Collections.emptyList());
+            }
+
+            if (pixelArt.getUserModel() != null) {
+                dto.setUserName(pixelArt.getUserModel().getUsername());
+            } else {
+                dto.setUserName(null);
+            }
 
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public List<CategoryModel> getAllCategories() {
+        return categoryRepository.findAll();
     }
 
     public void savePixelArt(byte[] image,

@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Injectable} from '@angular/core';
 import {Observable} from "rxjs";
-import {PixelArt, PixelArtCreateDto, PixelArtUpdateDto} from "../../../interfaces/pixelArt.interface";
+import {Categories, PixelArt, PixelArtUpdateDto} from "../../../interfaces/pixelArt.interface";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({
@@ -12,9 +12,14 @@ export class PixelArtService {
 
   private apiPixelArt = 'http://localhost:4002/art';
   listOfPixelArt: PixelArt[] = [];
+  listOfCategories: Categories[] = [];
 
   getAllArts(): Observable<PixelArt[]>{
     return this.http.get<PixelArt[]>(`${this.apiPixelArt}`);
+  }
+
+  getAllCategories(): Observable<Categories[]> {
+    return this.http.get<Categories[]>(`${this.apiPixelArt}/getCategories`)
   }
 
   saveArt(pixelArtSave: FormData): Observable<any> {
@@ -35,10 +40,19 @@ export class PixelArtService {
       (data: PixelArt[]) => {
         this.listOfPixelArt = data;
         this.cd.markForCheck();
-        console.log(data);
       },
       error =>  console.log('Error al cargar los datos : ' + error)
     );
+  }
+
+  loadCategories(){
+    this.getAllCategories().subscribe(
+      (data: Categories[]) => {
+        this.listOfCategories = data;
+        this.cd.markForCheck();
+      },
+      error =>  console.log('Error al cargar los datos : ' + error)
+    )
   }
 
 }
