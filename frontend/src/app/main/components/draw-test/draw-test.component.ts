@@ -79,9 +79,10 @@ export interface AnimationProject {
     SliderModule,
     CardModule,
     DialogModule, AiImageGeneratorComponent, AiAnimationGeneratorComponent],
-  providers:[ConfirmationService , MessageService , TokenUserService , PixelArtService , UsersService],
+  providers: [ConfirmationService, MessageService, TokenUserService, PixelArtService, UsersService],
   templateUrl: './draw-test.component.html',
   styleUrl: './draw-test.component.css',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -90,8 +91,6 @@ export class DrawTestComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    protected token: TokenUserService,
     private router: Router ,
     protected pixelArtService: PixelArtService,
     protected usersService: UsersService,
@@ -109,7 +108,7 @@ export class DrawTestComponent implements OnInit {
       tags: [null, Validators.required],
       userId: [null, Validators.required]
     });
-    
+
   }
 
   displayModal: boolean = false;
@@ -121,21 +120,19 @@ export class DrawTestComponent implements OnInit {
   showGrid: boolean = true;
   isEraser: boolean = false;
   formPostArt: FormGroup;
-  user: any = [];
-
-  private userPixels: { x: number, y: number, color: string }[] = [];
-  currentTool: 'pencil' | 'bucket' = 'pencil';
-  
-  frameRate: number = 12; // FPS
-  private animationInterval?: any;
   pixels: Pixel[] = [];
   layers: Layer[] = [];
+  user: any = [];
+
+  currentTool: 'pencil' | 'bucket' = 'pencil';
+
+  frameRate: number = 12; // FPS
+  private animationInterval?: any;
   activeLayerIndex: number = 0;
   newLayerName: string = '';
-  categories: any[] = [];
-  exportingImage = false; 
+  exportingImage = false;
 
-  
+
   animation: AnimationProject = {
     frames: [],
     currentFrameIndex: 0,
@@ -148,51 +145,8 @@ export class DrawTestComponent implements OnInit {
     }
   };
 
-  showDialog() {
-    this.displayModal = true;
-  }
 
-  confirmSave() {
-    this.confirmationService.confirm({
-      message: '¿Estás seguro que quieres publicar este dibujo?',
-      header: 'Confirmar publicación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.saveDrawing();
-      }
-    });
-  }
-  
-  confirm1(event: Event) {
-    this.confirmationService.confirm({
-        target: event.target as EventTarget,
-        message: 'Are you sure that you want to proceed?',
-        header: 'Confirmation',
-        closable: true,
-        closeOnEscape: true,
-        icon: 'pi pi-exclamation-triangle',
-        rejectButtonProps: {
-            label: 'Cancel',
-            severity: 'secondary',
-            outlined: true,
-        },
-        acceptButtonProps: {
-            label: 'Save',
-        },
-        accept: () => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
-        },
-        reject: () => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Rejected',
-                detail: 'You have rejected',
-                life: 3000,
-            });
-        },
-    });
-  }
-  
+
   canvasSizes = [
     { name: 'Pequeño (16x16)', width: 16, height: 16 },
     { name: 'Mediano (32x32)', width: 32, height: 32 },
@@ -218,53 +172,19 @@ export class DrawTestComponent implements OnInit {
     '#FFA500'  // Naranja
   ];
 
-responsiveOptions: any[] = [
-  {
-    breakpoint: '1400px',
-    numVisible: 5,
-    numScroll: 3
-  },
-  {
-    breakpoint: '1024px',
-    numVisible: 3,
-    numScroll: 2
-  },
-  {
-    breakpoint: '768px',
-    numVisible: 2,
-    numScroll: 1
-  }
-];
-
-  onCarouselPageChange(event: { page: number }) {
-    // Usar event.page en lugar de event directamente
-    this.currentCarouselPage = event.page;
-    
-    // Opcional: Navegar al primer frame de la página actual
-    // const firstFrameInPage = event.page * this.visibleFrames;
-    // this.gotoFrame(firstFrameInPage);
-  }
-    
   newColor: string = '#000000';
 
   selectedCanvasSize: any = this.canvasSizes[0];
   private pixelSize: number = 0;
-  private canvasWidth: number = 400;
-  private canvasHeight: number = 400;
+  private canvasWidth: number = 550;
+  private canvasHeight: number = 550;
   animationFrameId: number | undefined;
-  zoomLevel: number = 1.0;
-  panOffset = { x: 0, y: 0 };
-  isPanning: boolean = false;
-  lastPanPosition = { x: 0, y: 0 };
-  maxZoom: number = 5.0;
-  minZoom: number = 0.5;
-  visibleFrames = 7; 
-  scrollFrames = 3; 
+  visibleFrames = 7;
 
   onOpacityChange(value: number, index: number): void {
     // Asegurar que el valor esté dentro del rango
     const clampedValue = Math.max(0, Math.min(1, value));
-    
+
     // Actualizar la opacidad de la capa
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
     if (currentFrame && currentFrame.layers[index]) {
@@ -286,9 +206,9 @@ responsiveOptions: any[] = [
     if (!this.p5Instance) return;
     const p = this.p5Instance;
     p.clear();
-  
+
     if (this.showGrid) this.drawGrid(p);
-  
+
     if (this.animation.onionSkin.enabled && this.animation.currentFrameIndex > 0) {
       const prevFrame = this.animation.frames[this.animation.currentFrameIndex - 1];
       if (prevFrame?.layers) {
@@ -299,7 +219,7 @@ responsiveOptions: any[] = [
         });
       }
     }
-  
+
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
     if (currentFrame?.layers) {
       currentFrame.layers.forEach(layer => {
@@ -329,8 +249,7 @@ responsiveOptions: any[] = [
   }
 
   changeCanvasSize(): void {
-    const oldPixels = this.layers[this.activeLayerIndex].pixels;
-  
+
     this.initPixelArt(this.selectedCanvasSize.width, this.selectedCanvasSize.height);
   }
 
@@ -340,8 +259,6 @@ responsiveOptions: any[] = [
       this.p5Instance = null;
     }
 
-    this.userPixels = []; 
-
     const sketch = (p: any) => {
 
       this.p5Instance = p;
@@ -349,17 +266,17 @@ responsiveOptions: any[] = [
       p.setup = () => {
         const maxDimension = Math.max(gridWidth, gridHeight);
         this.pixelSize = this.canvasWidth / maxDimension;
-      
+
         const canvas = p.createCanvas(this.canvasWidth, this.canvasHeight);
         canvas.parent('p5-canvas');
-      
+
         p.pixelDensity(1);
         p.noStroke();
         p.drawingContext.imageSmoothingEnabled = false;
-      
+
         p.clear(); // <-- fondo transparente
       };
-      
+
 
       p.draw = () => {
         if (!this.exportingImage) {
@@ -367,23 +284,23 @@ responsiveOptions: any[] = [
         } else {
           p.clear(); // Limpiamos completamente el fondo sin color
         }
-      
+
         this.redrawCanvas(); // Dibuja los píxeles del usuario
-      
+
         if (this.isCursorOnCanvas(p)) {
           this.drawPixelHighlight(p);
         }
-      
+
         if (p.mouseIsPressed) {
           const x = p.mouseX;
           const y = p.mouseY;
-      
+
           if (this.currentTool === 'bucket') {
             this.floodFill(x, y, this.isEraser ? 'transparent' : this.currentColor);
           } else {
             this.handleDrawing(x, y);
           }
-      
+
           this.redrawCanvas();
         }
       };
@@ -393,7 +310,7 @@ responsiveOptions: any[] = [
   }
 
   private isCursorOnCanvas(p: any): boolean {
-    return p.mouseX >= 0 && p.mouseX < p.width && 
+    return p.mouseX >= 0 && p.mouseX < p.width &&
            p.mouseY >= 0 && p.mouseY < p.height;
   }
 
@@ -401,7 +318,7 @@ responsiveOptions: any[] = [
     const gridX = Math.floor(p.mouseX / this.pixelSize);
     const gridY = Math.floor(p.mouseY / this.pixelSize);
     const highlightColor = this.isEraser ? '#FF0000' : this.currentColor;
-    
+
     p.push();
     p.noFill();
     p.stroke(highlightColor);
@@ -416,6 +333,7 @@ responsiveOptions: any[] = [
   }
 
   //Modelo de las capas
+//Modelo de las capas
 
   initializeLayers() {
     this.layers = [
@@ -437,9 +355,9 @@ responsiveOptions: any[] = [
   addLayer(): void {
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
     if (!currentFrame) return;
-  
+
     const newLayerName = this.newLayerName || `Capa ${currentFrame.layers.length + 1}`;
-    
+
     const newLayer: Layer = {
       pixels: [],
       opacity: 1.0,
@@ -448,30 +366,30 @@ responsiveOptions: any[] = [
       name: newLayerName,
       blendMode: 'normal'
     };
-  
+
     currentFrame.layers.push(newLayer);
     currentFrame.activeLayerIndex = currentFrame.layers.length - 1;
-    
+
     this.newLayerName = '';
     this.syncCurrentFrameToView();
-    this.syncCanvasToLayer(); 
+    this.syncCanvasToLayer();
     this.redrawCanvas();
   }
 
   removeLayer(index: number): void {
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
     if (!currentFrame || currentFrame.layers.length <= 1) return;
-  
+
     currentFrame.layers.splice(index, 1);
     currentFrame.activeLayerIndex = Math.min(
       currentFrame.activeLayerIndex,
       currentFrame.layers.length - 1
     );
-  
+
     this.syncCurrentFrameToView();
     this.redrawCanvas();
   }
-  
+
 
   toggleLayerLock(index: number) {
     this.layers[index].locked = !this.layers[index].locked;
@@ -495,7 +413,7 @@ responsiveOptions: any[] = [
     if (currentFrame && currentFrame.layers[index]) {
       currentFrame.layers[index].visible = !currentFrame.layers[index].visible;
       this.syncCurrentFrameToView();
-      this.redrawCanvas(); 
+      this.redrawCanvas();
     }
   }
 
@@ -503,11 +421,11 @@ responsiveOptions: any[] = [
     if (!this.layers[event.previousIndex].locked && !this.layers[event.currentIndex].locked) {
       moveItemInArray(this.layers, event.previousIndex, event.currentIndex);
       this.redrawCanvas();
-      }
+    }
   }
   private updateLayerPixels(layer: Layer, x: number, y: number, color: string): void {
     const existingIndex = layer.pixels.findIndex(p => p.x === x && p.y === y);
-    
+
     if (existingIndex === -1 && color !== 'transparent') {
       layer.pixels.push({ x, y, color });
     } else if (existingIndex !== -1) {
@@ -520,20 +438,20 @@ responsiveOptions: any[] = [
   }
 
   // METODOS DE DIBUJO
-  
+
   private handleDrawing(x: number, y: number): void {
 
-    
+
     const gridX = Math.floor(x / this.pixelSize);
     const gridY = Math.floor(y / this.pixelSize);
 
     if (this.currentTool === 'bucket') {
       this.floodFill(x, y, this.isEraser ? 'transparent' : this.currentColor);
     } else {
-    
+
       const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
       if (!currentFrame) return;
-      
+
       const activeLayer = currentFrame.layers[currentFrame.activeLayerIndex];
       if (!activeLayer || activeLayer.locked) return;
 
@@ -561,45 +479,45 @@ responsiveOptions: any[] = [
   handleOpacityChange(event: Event, layerIndex: number): void {
     const target = event.target as HTMLInputElement | null;
     if (!target) return;
-  
+
     const opacity = Number(target.value) / 100;
     if (!isNaN(opacity)) {
       this.setLayerOpacity(layerIndex, opacity);
     }
   }
 
-  //CUBETA  
+  //CUBETA
 
 
   floodFill(startX: number, startY: number, newColor: string): void {
     const gridX = Math.floor(startX / this.pixelSize);
     const gridY = Math.floor(startY / this.pixelSize);
-  
+
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
     if (!currentFrame) return;
-  
+
     const activeLayer = currentFrame.layers[currentFrame.activeLayerIndex];
     if (!activeLayer || activeLayer.locked) return;
-  
+
     const targetPixel = activeLayer.pixels.find(p => p.x === gridX && p.y === gridY);
     const targetColor = targetPixel ? targetPixel.color : 'transparent';
-  
+
     if (targetColor === newColor) return;
-  
+
     const queue: {x: number, y: number}[] = [{x: gridX, y: gridY}];
     const visited = new Set<string>();
-  
+
     while (queue.length > 0) {
       const {x, y} = queue.shift()!;
       const pixelKey = `${x},${y}`;
-  
+
       if (visited.has(pixelKey) || !this.isInBounds(x, y)) continue;
-  
+
       const currentPixel = activeLayer.pixels.find(p => p.x === x && p.y === y);
       const currentColor = currentPixel ? currentPixel.color : 'transparent';
-  
+
       if (currentColor !== targetColor) continue;
-  
+
       if (newColor === 'transparent') {
         const index = activeLayer.pixels.findIndex(p => p.x === x && p.y === y);
         if (index >= 0) {
@@ -612,9 +530,9 @@ responsiveOptions: any[] = [
           activeLayer.pixels.push({x, y, color: newColor});
         }
       }
-  
+
       visited.add(pixelKey);
-  
+
       queue.push(
         {x: x + 1, y},
         {x: x - 1, y},
@@ -622,17 +540,17 @@ responsiveOptions: any[] = [
         {x, y: y - 1}
       );
     }
-  
+
     this.redrawCanvas();
   }
-  
+
   private isInBounds(x: number, y: number): boolean {
-    return x >= 0 && x < this.selectedCanvasSize.width && 
+    return x >= 0 && x < this.selectedCanvasSize.width &&
            y >= 0 && y < this.selectedCanvasSize.height;
   }
 
   //CAMBIO DE HERRAMIENTA
-  
+
   setTool(tool: 'pencil' | 'bucket'): void {
     this.currentTool = tool;
   }
@@ -652,14 +570,14 @@ responsiveOptions: any[] = [
   addColorToPalette(): void {
     if (!this.colorPalette.includes(this.newColor)) {
       this.colorPalette.push(this.newColor);
-      
+
       // Opcional: Mostrar notificación
       this.messageService.add({
         severity: 'success',
         summary: 'Color añadido',
         detail: `El color ${this.newColor} fue añadido a la paleta`
       });
-      
+
       // Opcional: Seleccionar automáticamente el nuevo color
       this.selectColorFromPalette(this.newColor);
     } else {
@@ -670,19 +588,19 @@ responsiveOptions: any[] = [
       });
     }
   }
-  
+
   selectColorFromPalette(color: string): void {
     this.currentColor = color;
-    this.isEraser = false; 
+    this.isEraser = false;
   }
-  
+
   removeColorFromPalette(index: number): void {
     if (this.colorPalette[index] === this.currentColor) {
-      this.currentColor = '#000000'; 
+      this.currentColor = '#000000';
     }
-    
+
     this.colorPalette.splice(index, 1);
-    
+
     this.messageService.add({
       severity: 'info',
       summary: 'Color eliminado',
@@ -700,47 +618,13 @@ responsiveOptions: any[] = [
     this.currentColor = this.isEraser ? 'transparent' : '#000000';
   }
 
-  downloadImage() {
-    const p = this.p5Instance;
-    const pixelWidth = this.selectedCanvasSize.width;
-    const pixelHeight = this.selectedCanvasSize.height;
-    
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = pixelWidth;
-    tempCanvas.height = pixelHeight;
-    const tempCtx = tempCanvas.getContext('2d')!;
-    
-    tempCtx.fillStyle = this.showGrid ? '#ffffff' : 'transparent';
-    tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-    
-    this.layers.forEach(layer => {
-      if (layer.visible) {
-        tempCtx.globalAlpha = layer.opacity;
-        layer.pixels.forEach(px => {
-          if (px.color !== 'transparent') {
-            const pixelX = Math.round(px.x / this.pixelSize);
-            const pixelY = Math.round(px.y / this.pixelSize);
-            tempCtx.fillStyle = px.color;
-            tempCtx.fillRect(pixelX, pixelY, 1, 1);
-          }
-        });
-      }
-    });
-    
-    const link = document.createElement('a');
-    link.download = 'pixel-art.png';
-    link.href = tempCanvas.toDataURL('image/png');
-    link.click();
-  }
-
-  //FRAME MODELO
 
   addFrame() {
     if (this.animation.frames.length === 0) {
       this.initializeEmptyFrame();
       return;
     }
-  
+
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
     const newFrame: Frame = {
       layers: currentFrame.layers.map(layer => ({
@@ -750,56 +634,56 @@ responsiveOptions: any[] = [
       activeLayerIndex: currentFrame.activeLayerIndex,
       duration: currentFrame.duration
     };
-  
+
     this.animation.frames.splice(this.animation.currentFrameIndex + 1, 0, newFrame);
     this.animation.currentFrameIndex++;
     this.loadCurrentFrame();
   }
-  
+
   removeFrame() {
     if (this.animation.frames.length > 1) {
       this.animation.frames.splice(this.animation.currentFrameIndex, 1);
       this.animation.currentFrameIndex = Math.min(
-        this.animation.currentFrameIndex, 
+        this.animation.currentFrameIndex,
         this.animation.frames.length - 1
       );
       this.loadCurrentFrame();
     }
   }
-  
+
   toggleAnimation() {
     this.animation.isPlaying = !this.animation.isPlaying;
-    
+
     if (this.animation.isPlaying) {
       this.playAnimation();
     } else {
       this.stopAnimation();
     }
   }
-  
+
   private playAnimation() {
     if (this.animationInterval) {
       clearInterval(this.animationInterval);
     }
-    
+
     let startTime = performance.now();
     let frameDuration = 1000 / this.frameRate;
-    
+
     const animate = (timestamp: number) => {
       const elapsed = timestamp - startTime;
       const currentFrameIndex = Math.floor(elapsed / frameDuration) % this.animation.frames.length;
-      
+
       if (currentFrameIndex !== this.animation.currentFrameIndex) {
         this.animation.currentFrameIndex = currentFrameIndex;
-        this.loadCurrentFrame(false); 
+        this.loadCurrentFrame(false);
       }
-      
+
       this.animationFrameId = requestAnimationFrame(animate);
     };
-    
+
     this.animationFrameId = requestAnimationFrame(animate);
   }
-  
+
   private stopAnimation() {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
@@ -850,7 +734,7 @@ responsiveOptions: any[] = [
       </div>
     `;
   }
-  
+
   // Asegurar que el carrusel muestre la página correcta cuando cambia el frame
   ngAfterViewChecked() {
     if (this.animation.frames.length > 10) {
@@ -869,19 +753,19 @@ responsiveOptions: any[] = [
       this.initializeEmptyFrame();
       return;
     }
-  
+
     this.animation.currentFrameIndex = Math.max(
       0,
       Math.min(this.animation.currentFrameIndex, this.animation.frames.length - 1)
     );
-  
+
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
-  
+
     if (!currentFrame.layers || currentFrame.layers.length === 0) {
       currentFrame.layers = [this.createNewLayer('Capa 1')];
       currentFrame.activeLayerIndex = 0;
     }
-  
+
     this.syncCurrentFrameToView();
     this.redrawCanvas();
   }
@@ -889,12 +773,12 @@ responsiveOptions: any[] = [
   private syncCurrentFrameToView(): void {
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
     if (!currentFrame) return;
-  
+
     this.layers = currentFrame.layers.map(layer => ({
       ...layer,
       pixels: [...layer.pixels]
     }));
-  
+
     this.activeLayerIndex = currentFrame.activeLayerIndex;
   }
 
@@ -914,14 +798,14 @@ responsiveOptions: any[] = [
     this.redrawCanvas();
   }
 
-  duplicateLayer(index: number) {  
+  duplicateLayer(index: number) {
     const layerToCopy = this.layers[index];
     const newLayer = {
       ...layerToCopy,
       name: `${layerToCopy.name} (Copia)`,
       pixels: layerToCopy.pixels.map(pixel => ({ ...pixel }))
     };
-    
+
     this.layers.splice(index + 1, 0, newLayer);
     this.activeLayerIndex = index + 1;
     this.redrawCanvas();
@@ -938,7 +822,7 @@ responsiveOptions: any[] = [
   private syncCanvasToLayer(): void {
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
     if (!currentFrame) return;
-  
+
     const activeLayer = currentFrame.layers[currentFrame.activeLayerIndex];
     if (!activeLayer) return;
 
@@ -957,7 +841,7 @@ responsiveOptions: any[] = [
       activeLayerIndex: 0,
       duration: 1000 / this.frameRate
     };
-    
+
     this.animation.frames = [newFrame];
     this.animation.currentFrameIndex = 0;
     this.syncCurrentFrameToView();
@@ -973,28 +857,28 @@ responsiveOptions: any[] = [
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Usuario no autenticado' });
       return;
     }
-  
+
     this.usersService.getUserByUsername(username).subscribe({
       next: (data) => {
         this.user = data;
         const userId = this.user.id;
         const canvasElement = document.querySelector('#p5-canvas canvas') as HTMLCanvasElement;
-  
+
         if (!canvasElement) {
           console.error('Canvas no encontrado');
           return;
         }
-  
+
         canvasElement.toBlob((blob) => {
           if (!blob) {
             console.error('No se pudo crear la imagen');
             return;
           }
-  
+
           const tags = this.formPostArt.value.tags
             ? this.formPostArt.value.tags.split(',').map((tag: string) => tag.trim())
             : [];
-  
+
           const formData = new FormData();
           formData.append('image', blob, 'drawing.png');
           formData.append('title', this.formPostArt.value.title);
@@ -1002,7 +886,7 @@ responsiveOptions: any[] = [
           formData.append('category_id', this.formPostArt.value.category_id);
           formData.append('tag', JSON.stringify(tags)); // o repetir múltiples formData.append('tag', t)
           formData.append('userId', userId);
-  
+
           this.pixelArtService.saveArt(formData).subscribe({
             next: () => {
               this.messageService.add({ severity: 'success', summary: 'Publicado', detail: '¡Tu dibujo ha sido publicado!' });
@@ -1014,7 +898,7 @@ responsiveOptions: any[] = [
               this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo publicar el dibujo' });
             }
           });
-  
+
         }, 'image/png');
 
         console.log(this.formPostArt.value); // o como se llame tu formulario
@@ -1024,13 +908,13 @@ responsiveOptions: any[] = [
       }
     });
   }
-  
+
   // AI CONTROLES
 
   showAITools = false;
   activeAITab: 'image' | 'animation' = 'image';
 
-  
+
   toggleAITools() {
     console.log('--- toggleAITools called ---'); // <-- ADD THIS
     this.showAITools = !this.showAITools;
@@ -1047,6 +931,6 @@ responsiveOptions: any[] = [
     this.cd.detectChanges();
   }
 
-  
+
 
 }

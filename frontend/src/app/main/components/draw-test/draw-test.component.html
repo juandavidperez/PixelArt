@@ -7,7 +7,7 @@
         <option *ngFor="let size of canvasSizes" [ngValue]="size">{{size.name}}</option>
       </select>
     </div>
-    
+
 </ng-template>
 <ng-template #center>
 
@@ -17,90 +17,90 @@
 <ng-template #end>
 
   <p-toast></p-toast>
-  
+
   <!-- Botón para abrir el modal -->
-  <p-button 
-    icon="pi pi-upload" 
-    label="¡ Publica tu dibujo !" 
-    text 
-    severity="secondary" 
+  <p-button
+    icon="pi pi-upload"
+    label="¡ Publica tu dibujo !"
+    text
+    severity="secondary"
     (click)="displayModal = true">
   </p-button>
-  
+
   <!-- Modal de formulario -->
-  <p-dialog 
-    header="Publicar Dibujo" 
-    [(visible)]="displayModal" 
-    [modal]="true" 
-    [closable]="false" 
+  <p-dialog
+    header="Publicar Dibujo"
+    [(visible)]="displayModal"
+    [modal]="true"
+    [closable]="false"
     [style]="{width: '400px'}">
-    
+
     <form [formGroup]="formPostArt" (ngSubmit)="saveDrawing()">
       <div class="field">
         <label for="title">Título</label>
         <input id="title" type="text" pInputText formControlName="title" />
       </div>
-    
+
       <div class="field">
         <label for="description">Descripción</label>
         <textarea id="description" rows="3" pInputTextarea formControlName="description"></textarea>
       </div>
-    
+
       <div class="field">
         <label for="category">Categoría</label>
-        <p-dropdown 
-          [options]="pixelArtService.listOfCategories" 
-          optionLabel="name" 
+        <p-dropdown
+          [options]="pixelArtService.listOfCategories"
+          optionLabel="name"
           optionValue="id"
           formControlName="category_id"
           placeholder="Selecciona una categoría">
         </p-dropdown>
 
       </div>
-    
+
       <div class="field">
         <label for="tags">Etiquetas (separadas por coma)</label>
         <input id="tags" type="text" pInputText formControlName="tags" />
       </div>
-    
+
       <div class="flex justify-end gap-2 mt-4">
         <p-button label="Cancelar" severity="secondary" (click)="displayModal = false"></p-button>
         <p-button label="Guardar" type="submit"></p-button>
       </div>
     </form>
-    
-  
+
+
   </p-dialog>
 
 </ng-template>
 </p-toolbar>
 
-<p-splitter [style]="{ minHeight: '750px' , height: '100%' }" [panelSizes]="[30, 70]" [minSizes]="[20, 0]" styleClass="mb-8" layout="vertical">
+<p-splitter [style]="{ minHeight: '750px' , height: '100%' }" [panelSizes]="[70, 30]" [minSizes]="[20, 0]" styleClass="mb-8" layout="vertical">
   <ng-template #panel>
 
-    <p-splitter [panelSizes]="[20, 40, 40]">
+    <p-splitter [panelSizes]="[20, 50, 30]">
       <ng-template #panel>
         <div class="col flex items-center justify-center">
           <div class="control-group tools">
-            <p-button 
+            <p-button
               icon="pi pi-pencil"
               label="Lapiz"
               [raised]="true" severity="warn"
-              (click)="setTool('pencil')" 
+              (click)="setTool('pencil')"
               [class.active]="currentTool === 'pencil' && !isEraser"
             >
             </p-button >
-            
-            <p-button  
-              (click)="setTool('bucket')" 
+
+            <p-button
+              (click)="setTool('bucket')"
               [class.active]="currentTool === 'bucket' && !isEraser"
               label="Cubeta"
               icon="pi pi-circle-fill"
               [raised]="true" severity="help"
               title="Cubeta - Click en área para rellenar, click en línea para cambiar color">
             </p-button >
-            
-            <p-button  
+
+            <p-button
               (click)="toggleEraser()"
               icon="pi pi-eraser"
               label="Borrador"
@@ -112,7 +112,7 @@
               <p-button severity="primary" (click)="toggleAITools()" class="ai-toggle-button">
                 {{ showAITools ? 'Ocultar IA' : 'Mostrar IA' }}
               </p-button>
-        
+
               <!-- Use [hidden] for the main container -->
               <div *ngIf="showAITools" class="ai-content">
                 <div class="ai-tabs control-group tools">
@@ -125,7 +125,7 @@
                     Generar Animación
                   </p-button>
                 </div>
-        
+
                 <p-card class="ai-tab-content">
                   <!-- Use [hidden] for the individual components -->
                   <app-ai-image-generator *ngIf="activeAITab === 'image'"></app-ai-image-generator>
@@ -142,6 +142,7 @@
 
             <div class="items-center justify-center">
               <div id="p5-canvas" class="canvas-container"></div>
+              <p>sdadsa</p>
             </div>
 
         </ng-template>
@@ -149,87 +150,88 @@
         <ng-template #panel>
           <div  class="aling-items justify-center ">
 
-              <div>
-                <h3>Capas</h3>
-                <div class="new-layer-control">
-                  <input [(ngModel)]="newLayerName" placeholder="Nombre de capa" class="layer-name-input">
-                  <p-button icon="pi pi-plus" (click)="addLayer()" severity="success">
-                  </p-button>
-                </div>
+            <div>
+              <h3>Capas</h3>
+              <div class="new-layer-control">
+                <input [(ngModel)]="newLayerName" placeholder="Nombre de capa" class="layer-name-input">
+                <p-button icon="pi pi-plus" (click)="addLayer()" severity="success">
+                </p-button>
               </div>
-          
-              <div cdkDropList (cdkDropListDropped)="dropLayer($event)">
-                <div *ngFor="let layer of layers; let i = index" 
-                     cdkDrag
-                     class="layer-item"
-                     [class.active]="i === activeLayerIndex"
-                     [class.locked]="layer.locked"
-                     (click)="!layer.locked && setActiveLayer(i)">
-          
-                    <p-button 
-                    icon="pi pi-lock-open"
-                    class="mr-2"
-                    text [raised]="true" severity="warn"
-                    [class.active]="layer.locked"
-                    (click)="toggleLayerLock(i); $event.stopPropagation()"
-                    title="Bloquear/Desbloquear">
+            </div>
 
-                    </p-button>
-                    
-                    <p-button 
-                    icon="pi pi-eye"
-                    class="mr-2"
-                    text [raised]="true" severity="contrast"
-                    [class.fa-eye]="layer.visible" 
-                    [class.fa-eye-slash]="!layer.visible"
-                    (click)="toggleLayerVisibility(i); $event.stopPropagation()"
-                    title="Visibilidad">
-                    </p-button>
-                  
-                  <input type="text" 
-                         [(ngModel)]="layer.name"
-                         (change)="updateLayerName(i, layer.name)"
+            <div cdkDropList (cdkDropListDropped)="dropLayer($event)">
+              <div *ngFor="let layer of layers; let i = index"
+                   cdkDrag
+                   class="layer-item"
+                   [class.active]="i === activeLayerIndex"
+                   [class.locked]="layer.locked"
+                   (click)="!layer.locked && setActiveLayer(i)">
+
+                <p-button
+                  icon="pi pi-lock-open"
+                  class="mr-2"
+                  text [raised]="true" severity="warn"
+                  [class.active]="layer.locked"
+                  (click)="toggleLayerLock(i); $event.stopPropagation()"
+                  title="Bloquear/Desbloquear">
+
+                </p-button>
+
+                <p-button
+                  icon="pi pi-eye"
+                  class="mr-2"
+                  text [raised]="true" severity="contrast"
+                  [class.fa-eye]="layer.visible"
+                  [class.fa-eye-slash]="!layer.visible"
+                  (click)="toggleLayerVisibility(i); $event.stopPropagation()"
+                  title="Visibilidad">
+                </p-button>
+
+                <input type="text"
+                       [(ngModel)]="layer.name"
+                       (change)="updateLayerName(i, layer.name)"
+                       (click)="$event.stopPropagation()"
+                       class="layer-name-input"
+                       [disabled]="layer.locked">
+
+                <div class="layer-opacity-control">
+                  <input type="range" min="0" max="100"
+                         [value]="layer.opacity * 100"
+                         (input)="handleOpacityChange($event, i)"
                          (click)="$event.stopPropagation()"
-                         class="layer-name-input"
                          [disabled]="layer.locked">
-                  
-                         <div class="layer-opacity-control">
-                          <input type="range" min="0" max="100" 
-                                 [value]="layer.opacity * 100"
-                                 (input)="handleOpacityChange($event, i)"
-                                 (click)="$event.stopPropagation()"
-                                 [disabled]="layer.locked">
-                          <span>{{(layer.opacity * 100).toFixed(0)}}%</span>
-                        </div>
-                  
-                  <button class="delete-layer" 
-                          (click)="removeLayer(i); $event.stopPropagation()"
-                          *ngIf="(animation.frames[animation.currentFrameIndex]?.layers || []).length > 1"
-                          title="Eliminar capa">
-                    <i class="fas fa-trash">eliminar</i>
-                  </button>
+                  <span>{{(layer.opacity * 100).toFixed(0)}}%</span>
                 </div>
+
+                <button class="delete-layer"
+                        (click)="removeLayer(i); $event.stopPropagation()"
+                        *ngIf="(animation.frames[animation.currentFrameIndex]?.layers || []).length > 1"
+                        title="Eliminar capa">
+                  <i class="fas fa-trash">eliminar</i>
+                </button>
               </div>
+            </div>
 
 
-              <div class="color-palette-container">
+
+            <div class="color-palette-container">
                 <div class="color-add-control flex items-center gap-2 mb-4">
-                  <p-colorpicker [(ngModel)]="newColor" [inline]="true" 
+                  <p-colorpicker [(ngModel)]="newColor" [inline]="true"
                                 styleClass="color-picker-small"/>
-                  
-                  <p-button icon="pi pi-plus" label="Añadir" 
-                           (click)="addColorToPalette()" 
+
+                  <p-button icon="pi pi-plus" label="Añadir"
+                           (click)="addColorToPalette()"
                            severity="success">
                   </p-button>
                 </div>
-              
+
                 <div class="color-grid">
-                  <div *ngFor="let color of colorPalette; let i = index" 
+                  <div *ngFor="let color of colorPalette; let i = index"
                        class="color-swatch"
                        [style.background]="color"
                        [class.active-swatch]="currentColor === color && !isEraser"
                        (click)="selectColorFromPalette(color)">
-                    
+
                     <span class="color-remove" (click)="removeColorFromPalette(i); $event.stopPropagation()">
                       <i class="pi pi-times"></i>
                     </span>
@@ -237,10 +239,10 @@
                 </div>
               </div>
 
-             
+
 
           </div>
-          
+
         </ng-template>
     </p-splitter>
 
@@ -253,44 +255,44 @@
         <div class="animation-controls">
           <div class="flex gap-2 mb-4 items-center">
             <p-button icon="pi pi-plus" label="Añadir Frame" (click)="addFrame()"></p-button>
-            <p-button icon="pi pi-minus" label="Eliminar" 
-                     (click)="removeFrame()" 
-                     [disabled]="animation.frames.length <= 1"></p-button>
-            <p-button 
-              [icon]="animation.isPlaying ? 'pi pi-pause' : 'pi pi-play'" 
+            <p-button icon="pi pi-minus" label="Eliminar"
+                      (click)="removeFrame()"
+                      [disabled]="animation.frames.length <= 1"></p-button>
+            <p-button
+              [icon]="animation.isPlaying ? 'pi pi-pause' : 'pi pi-play'"
               [label]="animation.isPlaying ? 'Detener' : 'Reproducir'"
               (click)="toggleAnimation()"
               [styleClass]="animation.isPlaying ? 'p-button-success' : ''">
             </p-button>
-            
+
             <div class="frame-controls ml-auto flex items-center gap-4">
               <div class="flex items-center gap-2">
                 <label class="font-medium">FPS:</label>
-                <p-inputNumber [(ngModel)]="frameRate" [min]="1" [max]="60" 
-                             mode="decimal" showButtons inputId="fps-control" 
-                             size="small" styleClass="w-20"></p-inputNumber>
+                <p-inputNumber [(ngModel)]="frameRate" [min]="1" [max]="60"
+                               mode="decimal" showButtons inputId="fps-control"
+                               size="small" styleClass="w-20"></p-inputNumber>
               </div>
-              
+
               <div class="frame-navigator flex items-center gap-2">
-                <p-button icon="pi pi-chevron-left" 
-                         (click)="prevFrame()" 
-                         [disabled]="animation.currentFrameIndex <= 0"
-                         size="small"></p-button>
+                <p-button icon="pi pi-chevron-left"
+                          (click)="prevFrame()"
+                          [disabled]="animation.currentFrameIndex <= 0"
+                          size="small"></p-button>
                 <span class="font-medium">
                   {{ animation.currentFrameIndex + 1 }}/{{ animation.frames.length }}
                 </span>
-                <p-button icon="pi pi-chevron-right" 
-                         (click)="nextFrame()" 
-                         [disabled]="animation.currentFrameIndex >= animation.frames.length - 1"
-                         size="small"></p-button>
+                <p-button icon="pi pi-chevron-right"
+                          (click)="nextFrame()"
+                          [disabled]="animation.currentFrameIndex >= animation.frames.length - 1"
+                          size="small"></p-button>
               </div>
             </div>
           </div>
-      
-          
-      
+
+
+
           <div *ngIf="animation.frames.length <= 10" class="timeline">
-            <div *ngFor="let frame of animation.frames; let i = index" 
+            <div *ngFor="let frame of animation.frames; let i = index"
                  class="frame-thumbnail"
                  [class.active]="i === animation.currentFrameIndex"
                  (click)="gotoFrame(i)">
@@ -301,7 +303,7 @@
           </div>
         </div>
       </div>
-        
+
     </div>
 
   </ng-template>

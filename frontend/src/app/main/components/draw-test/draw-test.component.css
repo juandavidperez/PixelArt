@@ -114,8 +114,8 @@ label {
 }
 
 .canvas-container {
-  width: 400px;
-  height: 400px;
+  width: 550px;
+  height: 550px;
   border: 1px solid #ccc;
   margin-top: 10px;
 }
@@ -457,11 +457,11 @@ label {
   cursor: pointer;
   position: relative;
   transition: transform 0.2s;
-  
+
   &:hover {
     transform: scale(1.1);
   }
-  
+
   &.active-swatch {
     box-shadow: 0 0 0 2px var(--primary-color);
   }
@@ -511,12 +511,12 @@ label {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-  
+
   &.active, &.active-frame {
     border: 2px solid var(--primary-color);
     background: #e6f2ff;
