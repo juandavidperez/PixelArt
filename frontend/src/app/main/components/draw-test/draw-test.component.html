@@ -128,8 +128,8 @@
 
                 <p-card class="ai-tab-content">
                   <!-- Use [hidden] for the individual components -->
-                  <app-ai-image-generator *ngIf="activeAITab === 'image'"></app-ai-image-generator>
-                  <app-ai-animation-generator *ngIf="activeAITab === 'animation'"></app-ai-animation-generator>
+                  <app-ai-image-generator (imageGenerated)="handleGeneratedImage($event)" *ngIf="activeAITab === 'image'"></app-ai-image-generator>
+                  <app-ai-animation-generator  *ngIf="activeAITab === 'animation'"></app-ai-animation-generator>
                 </p-card>
               </div>
             </div>
@@ -142,108 +142,104 @@
 
             <div class="items-center justify-center">
               <div id="p5-canvas" class="canvas-container"></div>
-              <p>sdadsa</p>
             </div>
 
         </ng-template>
 
-        <ng-template #panel>
-          <div  class="aling-items justify-center ">
+      <ng-template #panel>
+        <div  class="aling-items justify-center ">
 
-            <div>
-              <h3>Capas</h3>
-              <div class="new-layer-control">
-                <input [(ngModel)]="newLayerName" placeholder="Nombre de capa" class="layer-name-input">
-                <p-button icon="pi pi-plus" (click)="addLayer()" severity="success">
-                </p-button>
-              </div>
+          <div>
+            <h3>Capas</h3>
+            <div class="new-layer-control">
+              <input [(ngModel)]="newLayerName" placeholder="Nombre de capa" class="layer-name-input">
+              <p-button icon="pi pi-plus" (click)="addLayer()" severity="success">
+              </p-button>
             </div>
+          </div>
 
-            <div cdkDropList (cdkDropListDropped)="dropLayer($event)">
-              <div *ngFor="let layer of layers; let i = index"
-                   cdkDrag
-                   class="layer-item"
-                   [class.active]="i === activeLayerIndex"
-                   [class.locked]="layer.locked"
-                   (click)="!layer.locked && setActiveLayer(i)">
+          <div cdkDropList (cdkDropListDropped)="dropLayer($event)">
+            <div *ngFor="let layer of layers; let i = index"
+                 cdkDrag
+                 class="layer-item"
+                 [class.active]="i === activeLayerIndex"
+                 [class.locked]="layer.locked"
+                 (click)="!layer.locked && setActiveLayer(i)">
 
-                <p-button
-                  icon="pi pi-lock-open"
-                  class="mr-2"
-                  text [raised]="true" severity="warn"
-                  [class.active]="layer.locked"
-                  (click)="toggleLayerLock(i); $event.stopPropagation()"
-                  title="Bloquear/Desbloquear">
+              <p-button
+                icon="pi pi-lock-open"
+                class="mr-2"
+                text [raised]="true" severity="warn"
+                [class.active]="layer.locked"
+                (click)="toggleLayerLock(i); $event.stopPropagation()"
+                title="Bloquear/Desbloquear">
 
-                </p-button>
+              </p-button>
 
-                <p-button
-                  icon="pi pi-eye"
-                  class="mr-2"
-                  text [raised]="true" severity="contrast"
-                  [class.fa-eye]="layer.visible"
-                  [class.fa-eye-slash]="!layer.visible"
-                  (click)="toggleLayerVisibility(i); $event.stopPropagation()"
-                  title="Visibilidad">
-                </p-button>
+              <p-button
+                icon="pi pi-eye"
+                class="mr-2"
+                text [raised]="true" severity="contrast"
+                [class.fa-eye]="layer.visible"
+                [class.fa-eye-slash]="!layer.visible"
+                (click)="toggleLayerVisibility(i); $event.stopPropagation()"
+                title="Visibilidad">
+              </p-button>
 
-                <input type="text"
-                       [(ngModel)]="layer.name"
-                       (change)="updateLayerName(i, layer.name)"
+              <input type="text"
+                     [(ngModel)]="layer.name"
+                     (change)="updateLayerName(i, layer.name)"
+                     (click)="$event.stopPropagation()"
+                     class="layer-name-input"
+                     [disabled]="layer.locked">
+
+              <div class="layer-opacity-control">
+                <input type="range" min="0" max="100"
+                       [value]="layer.opacity * 100"
+                       (input)="handleOpacityChange($event, i)"
                        (click)="$event.stopPropagation()"
-                       class="layer-name-input"
                        [disabled]="layer.locked">
-
-                <div class="layer-opacity-control">
-                  <input type="range" min="0" max="100"
-                         [value]="layer.opacity * 100"
-                         (input)="handleOpacityChange($event, i)"
-                         (click)="$event.stopPropagation()"
-                         [disabled]="layer.locked">
-                  <span>{{(layer.opacity * 100).toFixed(0)}}%</span>
-                </div>
-
-                <button class="delete-layer"
-                        (click)="removeLayer(i); $event.stopPropagation()"
-                        *ngIf="(animation.frames[animation.currentFrameIndex]?.layers || []).length > 1"
-                        title="Eliminar capa">
-                  <i class="fas fa-trash">eliminar</i>
-                </button>
+                <span>{{(layer.opacity * 100).toFixed(0)}}%</span>
               </div>
+
+              <button class="delete-layer"
+                      (click)="removeLayer(i); $event.stopPropagation()"
+                      *ngIf="(animation.frames[animation.currentFrameIndex]?.layers || []).length > 1"
+                      title="Eliminar capa">
+                <i class="fas fa-trash">eliminar</i>
+              </button>
+            </div>
+          </div>
+
+
+          <div class="color-palette-container">
+            <div class="color-add-control flex items-center gap-2 mb-4">
+              <p-colorpicker [(ngModel)]="newColor" [inline]="true"
+                             styleClass="color-picker-small"/>
+
+              <p-button icon="pi pi-plus" label="Añadir"
+                        (click)="addColorToPalette()"
+                        severity="success">
+              </p-button>
             </div>
 
-
-
-            <div class="color-palette-container">
-                <div class="color-add-control flex items-center gap-2 mb-4">
-                  <p-colorpicker [(ngModel)]="newColor" [inline]="true"
-                                styleClass="color-picker-small"/>
-
-                  <p-button icon="pi pi-plus" label="Añadir"
-                           (click)="addColorToPalette()"
-                           severity="success">
-                  </p-button>
-                </div>
-
-                <div class="color-grid">
-                  <div *ngFor="let color of colorPalette; let i = index"
-                       class="color-swatch"
-                       [style.background]="color"
-                       [class.active-swatch]="currentColor === color && !isEraser"
-                       (click)="selectColorFromPalette(color)">
+            <div class="color-grid">
+              <div *ngFor="let color of colorPalette; let i = index"
+                   class="color-swatch"
+                   [style.background]="color"
+                   [class.active-swatch]="currentColor === color && !isEraser"
+                   (click)="selectColorFromPalette(color)">
 
                     <span class="color-remove" (click)="removeColorFromPalette(i); $event.stopPropagation()">
                       <i class="pi pi-times"></i>
                     </span>
-                  </div>
-                </div>
               </div>
-
-
-
+            </div>
           </div>
 
-        </ng-template>
+        </div>
+
+      </ng-template>
     </p-splitter>
 
   </ng-template>

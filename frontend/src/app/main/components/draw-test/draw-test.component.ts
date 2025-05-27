@@ -1,14 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import p5 from 'p5';
-import { Router, RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
 import { SplitterModule } from 'primeng/splitter';
 import { ColorPickerModule } from 'primeng/colorpicker';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
@@ -78,8 +86,11 @@ export interface AnimationProject {
     CarouselModule,
     SliderModule,
     CardModule,
-    DialogModule, AiImageGeneratorComponent, AiAnimationGeneratorComponent],
-  providers: [ConfirmationService, MessageService, TokenUserService, PixelArtService, UsersService],
+    DialogModule,
+    AiImageGeneratorComponent,
+    AiAnimationGeneratorComponent
+  ],
+  providers: [MessageService, PixelArtService, UsersService],
   templateUrl: './draw-test.component.html',
   styleUrl: './draw-test.component.css',
   standalone: true,
@@ -99,7 +110,6 @@ export class DrawTestComponent implements OnInit {
     this.formGroup = this.fb.group({
       color: ['#000000']
     });
-
     this.formPostArt = this.fb.group({
       image: [null, Validators.required],
       title: ['', Validators.required],
@@ -108,30 +118,27 @@ export class DrawTestComponent implements OnInit {
       tags: [null, Validators.required],
       userId: [null, Validators.required]
     });
-
   }
 
   displayModal: boolean = false;
   formGroup: FormGroup;
+  formPostArt: FormGroup;
+  @Output() imageGenerated = new EventEmitter<string>();
   @ViewChild('carousel')  carousel: Carousel | any ;
   currentCarouselPage = 0;
   private p5Instance: any;
   currentColor: string = '#000000';
   showGrid: boolean = true;
   isEraser: boolean = false;
-  formPostArt: FormGroup;
-  pixels: Pixel[] = [];
-  layers: Layer[] = [];
-  user: any = [];
 
   currentTool: 'pencil' | 'bucket' = 'pencil';
 
   frameRate: number = 12; // FPS
   private animationInterval?: any;
+  layers: Layer[] = [];
   activeLayerIndex: number = 0;
   newLayerName: string = '';
-  exportingImage = false;
-
+  user: any = [];
 
   animation: AnimationProject = {
     frames: [],
@@ -146,10 +153,7 @@ export class DrawTestComponent implements OnInit {
   };
 
 
-
   canvasSizes = [
-    { name: 'Pequeño (16x16)', width: 16, height: 16 },
-    { name: 'Mediano (32x32)', width: 32, height: 32 },
     { name: 'Grande (64x64)', width: 64, height: 64 }
   ];
 
@@ -172,6 +176,9 @@ export class DrawTestComponent implements OnInit {
     '#FFA500'  // Naranja
   ];
 
+
+
+
   newColor: string = '#000000';
 
   selectedCanvasSize: any = this.canvasSizes[0];
@@ -180,18 +187,6 @@ export class DrawTestComponent implements OnInit {
   private canvasHeight: number = 550;
   animationFrameId: number | undefined;
   visibleFrames = 7;
-
-  onOpacityChange(value: number, index: number): void {
-    // Asegurar que el valor esté dentro del rango
-    const clampedValue = Math.max(0, Math.min(1, value));
-
-    // Actualizar la opacidad de la capa
-    const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
-    if (currentFrame && currentFrame.layers[index]) {
-      currentFrame.layers[index].opacity = clampedValue;
-      this.redrawCanvas();
-    }
-  }
 
   ngOnInit() {
     this.initializeEmptyFrame();
@@ -249,6 +244,7 @@ export class DrawTestComponent implements OnInit {
   }
 
   changeCanvasSize(): void {
+    const oldPixels = this.layers[this.activeLayerIndex].pixels;
 
     this.initPixelArt(this.selectedCanvasSize.width, this.selectedCanvasSize.height);
   }
@@ -269,23 +265,14 @@ export class DrawTestComponent implements OnInit {
 
         const canvas = p.createCanvas(this.canvasWidth, this.canvasHeight);
         canvas.parent('p5-canvas');
-
         p.pixelDensity(1);
         p.noStroke();
         p.drawingContext.imageSmoothingEnabled = false;
-
-        p.clear(); // <-- fondo transparente
       };
 
-
       p.draw = () => {
-        if (!this.exportingImage) {
-          this.drawGrid(p); // Solo mostramos la cuadrícula mientras editamos
-        } else {
-          p.clear(); // Limpiamos completamente el fondo sin color
-        }
 
-        this.redrawCanvas(); // Dibuja los píxeles del usuario
+        this.redrawCanvas();
 
         if (this.isCursorOnCanvas(p)) {
           this.drawPixelHighlight(p);
@@ -300,7 +287,6 @@ export class DrawTestComponent implements OnInit {
           } else {
             this.handleDrawing(x, y);
           }
-
           this.redrawCanvas();
         }
       };
@@ -311,7 +297,7 @@ export class DrawTestComponent implements OnInit {
 
   private isCursorOnCanvas(p: any): boolean {
     return p.mouseX >= 0 && p.mouseX < p.width &&
-           p.mouseY >= 0 && p.mouseY < p.height;
+      p.mouseY >= 0 && p.mouseY < p.height;
   }
 
   private drawPixelHighlight(p: any): void {
@@ -327,30 +313,63 @@ export class DrawTestComponent implements OnInit {
       gridX * this.pixelSize + 1,
       gridY * this.pixelSize + 1,
       this.pixelSize - 2,
-    this.pixelSize - 2
+      this.pixelSize - 2
     );
     p.pop();
   }
 
-  //Modelo de las capas
-//Modelo de las capas
+  handleGeneratedImage(imageUrl: string) {
+    const img = new Image();
+    img.src = imageUrl;
 
-  initializeLayers() {
-    this.layers = [
-      {
-        pixels: [],
-        opacity: 1.0,
-        visible: true,
-        locked: false,
-        name: 'Capa 1',
-        blendMode: 'normal'
+    img.onload = () => {
+      const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
+      const activeLayer = currentFrame.layers[currentFrame.activeLayerIndex];
+
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, img.width, img.height);
+      const data = imageData.data;
+
+      // Limpia la capa actual
+      activeLayer.pixels = [];
+
+      for (let y = 0; y < img.height; y++) {
+        for (let x = 0; x < img.width; x++) {
+          const index = (y * img.width + x) * 4;
+          const r = data[index];
+          const g = data[index + 1];
+          const b = data[index + 2];
+          const a = data[index + 3];
+
+          if (a > 0) {
+            const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+            activeLayer.pixels.push({ x, y, color: hex });
+          }
+        }
       }
-    ];
+
+      this.redrawCanvas();
+    };
   }
 
-  initializePixelData() {
-    this.layers[this.activeLayerIndex].pixels = [];
+  loadAiFrames(frames: Frame[]) {
+    this.animation.frames.push(...frames);
+    this.animation.currentFrameIndex = this.animation.frames.length - frames.length;
+    this.syncCurrentFrameToView();
+    this.redrawCanvas();
   }
+
+
+
+  //Modelo de las capas
+
 
   addLayer(): void {
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
@@ -463,18 +482,20 @@ export class DrawTestComponent implements OnInit {
   }
 
 
- private drawGrid(p: any): void {
-  const color1 = 220;
-  p.noStroke();
-  p.fill(color1,255); // Transparente
+  private drawGrid(p: any): void {
+    const color1 = 220;
+    const color2 = 255;
 
-  for (let x = 0; x < p.width; x += this.pixelSize * 2) {
-    for (let y = 0; y < p.height; y += this.pixelSize * 2) {
-      p.rect(x, y, this.pixelSize, this.pixelSize);
-      p.rect(x + this.pixelSize, y + this.pixelSize, this.pixelSize, this.pixelSize);
+    p.background(color2);
+
+    p.fill(color1);
+    for (let x = 0; x < p.width; x += this.pixelSize * 2) {
+      for (let y = 0; y < p.height; y += this.pixelSize * 2) {
+        p.rect(x, y, this.pixelSize, this.pixelSize);
+        p.rect(x + this.pixelSize, y + this.pixelSize, this.pixelSize, this.pixelSize);
+      }
     }
   }
-}
 
   handleOpacityChange(event: Event, layerIndex: number): void {
     const target = event.target as HTMLInputElement | null;
@@ -546,7 +567,7 @@ export class DrawTestComponent implements OnInit {
 
   private isInBounds(x: number, y: number): boolean {
     return x >= 0 && x < this.selectedCanvasSize.width &&
-           y >= 0 && y < this.selectedCanvasSize.height;
+      y >= 0 && y < this.selectedCanvasSize.height;
   }
 
   //CAMBIO DE HERRAMIENTA
@@ -557,15 +578,6 @@ export class DrawTestComponent implements OnInit {
 
   //COLORES
 
-  changeColor(newColor: string): void {
-    this.currentColor = newColor;
-  }
-
-  // Método para añadir un nuevo color a la paleta
-  onColorChange() {
-    this.currentColor = this.formGroup.value.color;
-    this.isEraser = false;
-  }
 
   addColorToPalette(): void {
     if (!this.colorPalette.includes(this.newColor)) {
@@ -608,16 +620,13 @@ export class DrawTestComponent implements OnInit {
     });
   }
 
-  toggleGrid(): void {
-    this.showGrid = !this.showGrid;
-    this.redrawCanvas();
-  }
 
   toggleEraser(): void {
     this.isEraser = !this.isEraser;
     this.currentColor = this.isEraser ? 'transparent' : '#000000';
   }
 
+  //FRAME MODELO
 
   addFrame() {
     if (this.animation.frames.length === 0) {
@@ -725,26 +734,6 @@ export class DrawTestComponent implements OnInit {
     }
   }
 
-  generateFramePreview(frame: any): string {
-    // Implementa según cómo almacenas los datos de los frames
-    // Esto es un ejemplo básico - adapta a tu estructura real
-    return `
-      <div style="width: 100%; height: 30px; background: #f0f0f0; display: flex;">
-        ${frame.layers?.some((l: { visible: any; }) => l.visible) ? '◼' : '◻'}
-      </div>
-    `;
-  }
-
-  // Asegurar que el carrusel muestre la página correcta cuando cambia el frame
-  ngAfterViewChecked() {
-    if (this.animation.frames.length > 10) {
-      const expectedPage = Math.floor(this.animation.currentFrameIndex / this.visibleFrames);
-      if (this.currentCarouselPage !== expectedPage) {
-        this.currentCarouselPage = expectedPage;
-      }
-    }
-  }
-
   loadCurrentFrame(stopAnimation: boolean = true): void {
     if (stopAnimation && this.animation.isPlaying) {
       this.stopAnimation();
@@ -793,23 +782,6 @@ export class DrawTestComponent implements OnInit {
     };
   }
 
-  toggleOnionSkin(): void {
-    this.animation.onionSkin.enabled = !this.animation.onionSkin.enabled;
-    this.redrawCanvas();
-  }
-
-  duplicateLayer(index: number) {
-    const layerToCopy = this.layers[index];
-    const newLayer = {
-      ...layerToCopy,
-      name: `${layerToCopy.name} (Copia)`,
-      pixels: layerToCopy.pixels.map(pixel => ({ ...pixel }))
-    };
-
-    this.layers.splice(index + 1, 0, newLayer);
-    this.activeLayerIndex = index + 1;
-    this.redrawCanvas();
-  }
 
   setActiveLayer(index: number): void {
     const currentFrame = this.animation.frames[this.animation.currentFrameIndex];
@@ -847,7 +819,6 @@ export class DrawTestComponent implements OnInit {
     this.syncCurrentFrameToView();
     this.redrawCanvas();
   }
-
 
   //PUBLICAR DIBUJO
 
@@ -930,7 +901,6 @@ export class DrawTestComponent implements OnInit {
     // Keep markForCheck for now, or try detectChanges later
     this.cd.detectChanges();
   }
-
 
 
 }
