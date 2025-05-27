@@ -7,7 +7,6 @@ import { DrawTestComponent } from './main/components/draw-test/draw-test.compone
 
 export const routes: Routes = [
   { path: 'main', component: MainComponent, loadChildren: () => import('./main/components/main/main.routes').then((m) => m.routes)  },
-  { path: 'draw', component: DrawComponent },
   { path: 'drawTest', component: DrawTestComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

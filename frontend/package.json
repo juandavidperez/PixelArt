@@ -21,6 +21,7 @@
     "@primeng/themes": "^19.0.9",
     "@primeuix/utils": "^0.5.1",
     "@types/three": "^0.174.0",
+    "gifuct-js": "^2.1.2",
     "p5": "^1.11.3",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",

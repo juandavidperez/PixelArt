@@ -5,16 +5,19 @@ import {RegisterComponent} from "../register/register.component";
 import { CommonModule } from '@angular/common';
 import {UsersService} from "../../../shared/services/users/users.service";
 import {UserInterface} from "../../../interfaces/user.interface";
+import {MessageService} from "primeng/api";
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css'],
-    imports: [
-        ReactiveFormsModule,
-        RouterModule,
-        CommonModule
-    ]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    RouterModule,
+    CommonModule
+  ],
+  providers:[MessageService]
 })
 export class LoginComponent implements OnInit{
 
@@ -27,6 +30,7 @@ export class LoginComponent implements OnInit{
   constructor(
     private fb: FormBuilder,
     private usersService: UsersService,
+    private message: MessageService,
     private router: Router
   ) {}
 
@@ -71,6 +75,7 @@ export class LoginComponent implements OnInit{
         error: (error) => {
           console.error("Inicio de sesión no válido", error);
           this.loginError = true;
+          this.message.add({ severity: 'warn', summary: 'Uups', detail: '¡Incio de sesion incorrecto!' });
           this.errorMessage = 'Inicio de sesión fallido. Verifica tus credenciales.';
         }
       });
