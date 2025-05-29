@@ -11,3 +11,7 @@
   background-color: #f0f4f8; /* color de fondo al pasar el mouse */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* un poco de sombra */
 }
+
+.p-radius{
+  border-radius: 4px;
+}

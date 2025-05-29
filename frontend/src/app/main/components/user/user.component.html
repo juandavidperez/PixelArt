@@ -1,0 +1,54 @@
+<div class="flex h-screen">
+  <!-- Sidebar -->
+  <div class="w-64 bg-gray-100 p-4 shadow-md">
+    <p-panelMenu [model]="items"></p-panelMenu>
+  </div>
+
+  <!-- Contenido dinámico -->
+  <div class="flex-1 p-6">
+    <!-- Perfil -->
+    <ng-container *ngIf="activeTab === 'perfil' && userData">
+        <p-card header="Perfil de Usuario" class="mb-4">
+            <div class="flex flex-column gap-3">
+            <div>
+                <label for="userName">Nombre de usuario</label>
+                <input id="userName" type="text" pInputText [(ngModel)]="nombreUsuario" />
+            </div>
+            <div>
+                <label for="newPassword">Nueva contraseña</label>
+                <input id="newPassword" type="password" pInputText [(ngModel)]="newPassword" />
+            </div>
+            <button pButton label="Guardar cambios" class="mt-2" (click)="guardarCambios()"> </button>
+            </div>
+        </p-card>
+    </ng-container>
+
+
+
+    <!-- Mis PixelArts -->
+    <ng-container *ngIf="activeTab === 'mis-artes'">
+      <p-card header="Mis PixelArts">
+        <div *ngIf="misPixelArts.length === 0">No tienes pixel arts todavía.</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <p-card *ngFor="let art of misPixelArts" [header]="art.title">
+            <img [src]="'data:image/png;base64,' + art.image" alt="PixelArt" class="w-full h-auto mb-2" />
+            <p>{{ art.description }}</p>
+            <div class="mt-2 flex justify-end gap-2">
+              <button pButton icon="pi pi-pencil" (click)="editarArt(art)" class="p-button-sm" > </button>
+              <button pButton icon="pi pi-trash" (click)="eliminarArt(art.id)" class="p-button-danger p-button-sm"> </button>
+            </div>
+          </p-card>
+        </div>
+      </p-card>
+    </ng-container>
+
+    <!-- Cerrar sesión -->
+    <ng-container *ngIf="activeTab === 'cerrar'">
+      <p-confirmDialog></p-confirmDialog>
+      <p-card header="¿Deseas cerrar sesión?">
+        <button pButton label="Cerrar sesión" severity="danger" (click)="cerrarSesion()"> </button>
+      </p-card>
+    </ng-container>
+  </div>
+</div>
+

@@ -1,4 +1,47 @@
-<div class="tarjeta" *ngFor="let pixelArt of this.pixelArtService.listOfPixelArt">
+<p-card header="Filtros" class="mi-card">
+  <div class="card flex flex-wrap justify-center gap-4">
+
+    <div class="flex flex-column">
+      <label for="searchInput" class="mb-2 font-semibold">Buscar por nombre</label>
+      <div class="w-20rem"> 
+        <p-iconfield>
+          <p-inputicon styleClass="pi pi-search"  />
+          <input
+            id="searchInput"
+            type="text"
+            pInputText
+            [(ngModel)]="searchTerm"
+            placeholder="Buscar..."
+          />
+        </p-iconfield>
+      </div>
+    </div>
+
+    <div class="flex flex-column">
+      <label for="categoryInput" class="mb-2 font-semibold">Filtrar por categoría</label>
+      <p-autoComplete
+        [(ngModel)]="selectedCategory"
+        [suggestions]="filteredCategories"
+        (completeMethod)="filterCategories($event)"
+        [dropdown]="true"
+        [forceSelection]="true"
+        field="name"
+        placeholder="Categoría"
+      />
+
+    </div>
+
+    <div class="flex flex-column ml-auto mt-4">
+      <p-button label="Buscar" severity="help" (onClick)="filterArts()"/>
+    </div>
+
+  </div>
+</p-card>
+
+
+
+
+<div class="tarjeta" *ngFor="let pixelArt of filteredArts">
   <div class="contenido">
     <div class="ladoIzq">
       <h2 class="titulo">{{pixelArt.title}}</h2>

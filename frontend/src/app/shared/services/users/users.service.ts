@@ -3,8 +3,7 @@ import {map, Observable} from "rxjs";
 import {registerUsers} from "../../../interfaces/registerUsers";
 import { HttpClient } from "@angular/common/http";
 import {LoginUsers} from "../../../interfaces/loginUsers";
-import {UserInterface} from "../../../interfaces/user.interface";
-import {TokenUserService} from "../tokenUser/token-user.service";
+import {PixelArtUserDto, UserInterface} from "../../../interfaces/user.interface";
 
 @Injectable({
   providedIn: 'root'
