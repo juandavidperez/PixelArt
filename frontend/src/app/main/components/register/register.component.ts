@@ -5,13 +5,15 @@ import { LoginComponent } from '../login/login.component';
 import {Router, RouterModule} from "@angular/router";
 import {UsersService} from "../../../shared/services/users/users.service";
 import {registerUsers} from "../../../interfaces/registerUsers";
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
     selector: 'app-register',
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        RouterModule
+        RouterModule,
+        AvatarModule
     ],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css']

@@ -71,3 +71,21 @@ a.btn:first-of-type {
 a.btn:hover{
   opacity: 0.8;
 }
+
+::ng-deep .mi-card .p-card {
+  margin: 10px;
+  place-self: anchor-center;
+  background-color: #ffffff; 
+  color: #333;
+}
+
+::ng-deep .mi-autocomplete .p-inputtext {
+  background-color: #f0f0f0; 
+  color: #333;
+  border-radius: 6px;
+}
+
+::ng-deep .mi-autocomplete .p-inputtext:focus {
+  border-color: #680880;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}

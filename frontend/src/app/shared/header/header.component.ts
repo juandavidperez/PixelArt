@@ -3,7 +3,6 @@ import { Router, RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from '@angular/common';
 import {TokenUserService} from "../services/tokenUser/token-user.service";
-import { ToggleThemeComponent } from "../toggle-theme/toggle-theme.component";
 import {ToolbarModule} from "primeng/toolbar";
 import {SidebarModule} from "primeng/sidebar";
 import {Button} from "primeng/button";
@@ -11,6 +10,7 @@ import {Avatar} from "primeng/avatar";
 import { CardModule } from 'primeng/card';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from 'primeng/api';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @Component({
     selector: 'app-header',
@@ -21,11 +21,11 @@ import { TreeNode } from 'primeng/api';
     FormsModule,
     CommonModule,
     SidebarModule,
-    ToggleThemeComponent,
     CardModule,
     ToolbarModule,
     TreeModule,
     Button,
+    OverlayPanelModule,
     Avatar
 ]
 })
@@ -99,13 +99,13 @@ export class HeaderComponent implements OnInit{
     this.isMobile = window.innerWidth <= 840;  
   }
 
-  toggleSidebar() {
-    this.sidebarVisible = !this.sidebarVisible; 
+  cerrarSesion() {
+    this.tokenUserService.clearToken();
+    this.router.navigate(['/login']);
   }
 
-  cerrarSesion() {
-    this.tokenUserService.clearToken(); 
-    this.router.navigate(['/login']);
+  verPerfil() {
+    this.router.navigate(['/user']);
   }
 
 }
