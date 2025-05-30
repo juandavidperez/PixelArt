@@ -12,6 +12,11 @@ body {
 
   background-size: cover;
 }
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
 .container-form {
   display: flex;
   border-radius: 20px;

@@ -19,22 +19,15 @@
       <p-button label="Empieza a dibujar" class="mt-2 mr-3" severity="success" size="small" [routerLink]="['/drawTest']" />
 
       <ng-container *ngIf="!isToken">
-        <p-button label="Iniciar sesión" icon="pi pi-user" severity="info" size="small"  />
+        <p-button label="Iniciar sesión" class="mt-2 mr-3" icon="pi pi-user" severity="info" size="small" [routerLink]="['/login']" />
       </ng-container>
 
       <ng-container *ngIf="isToken">
         <p-avatar
           image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
           [style]="{ width: '50px', height: '50px', cursor: 'pointer' }"
-          (click)="op.toggle($event)"
+          (click)="cerrarSesion()"
         ></p-avatar>
-
-        <p-overlayPanel #op [dismissable]="true">
-          <div class="flex flex-column">
-            <button type="button" label="Ver perfil" (click)="verPerfil()" class="p-button-info mb-2 p-1 p-radius">Ver perfil</button>
-            <button type="button" label="Cerrar sesión" (click)="cerrarSesion()" class=" p-button-danger p-1 p-radius">Cerrar sesión</button>
-          </div>
-        </p-overlayPanel>
       </ng-container>
 
     </div>

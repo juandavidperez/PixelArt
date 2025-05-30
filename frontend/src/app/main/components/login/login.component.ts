@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import {UsersService} from "../../../shared/services/users/users.service";
 import {UserInterface} from "../../../interfaces/user.interface";
 import {MessageService} from "primeng/api";
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ import {MessageService} from "primeng/api";
   imports: [
     ReactiveFormsModule,
     RouterModule,
-    CommonModule
+    CommonModule,
+    AvatarModule
   ],
   providers:[MessageService]
 })
@@ -25,7 +27,7 @@ export class LoginComponent implements OnInit{
   loginForm!: FormGroup;
   loginSuccess = false;
   loginError = false;
-  errorMessage: string = ''; // Para mostrar mensajes de error
+  errorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -48,7 +50,7 @@ export class LoginComponent implements OnInit{
 
       this.usersService.loginUser({ email, password }).subscribe({
         next: (data) => {
-          console.log('Respuesta del servidor:', data);  // Para depuración
+          console.log('Respuesta del servidor:', data);
 
           if (data && data.token) {
             localStorage.setItem('authToken', data.token);
@@ -56,17 +58,14 @@ export class LoginComponent implements OnInit{
             const decodedToken = this.decodeToken(data.token);
 
 
-            const userId = decodedToken ? decodedToken.sub : null; // El 'sub' es el identificador
+            const userId = decodedToken ? decodedToken.sub : null;
 
             if (userId) {
-              // Guardamos el ID del usuario en localStorage
               localStorage.setItem('userId', userId);
               console.log('ID del usuario guardado:', userId);
             } else {
               console.error('No se encontró el ID del usuario en el token');
             }
-
-            // Redirigimos al usuario a la página principal
             this.router.navigate(['main']);
           } else {
             console.error('No se recibió un token en la respuesta');
